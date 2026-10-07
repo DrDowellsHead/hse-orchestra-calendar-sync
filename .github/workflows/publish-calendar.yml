@@ -7,6 +7,8 @@ on:
       - main
     paths:
       - 'scripts/**'
+      - 'site-assets/**'
+      - 'tilda/**'
       - '.github/workflows/publish-calendar.yml'
   schedule:
     # GitHub cron cannot express a rolling "every 15 days" interval.
