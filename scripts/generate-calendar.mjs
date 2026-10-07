@@ -68,20 +68,34 @@ function normalizeTime(value, fallback = '00:00') {
   return `${match[1].padStart(2, '0')}:${match[2]}`;
 }
 
+function stableHash(value) {
+  let hash = 0x811c9dc5;
+  const bytes = new TextEncoder().encode(clean(value));
+
+  for (const byte of bytes) {
+    hash ^= byte;
+    hash = Math.imul(hash, 0x01000193);
+  }
+
+  return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
+function sanitizeUid(value) {
+  const source = clean(value);
+  const slug = source
+    .normalize('NFKD')
+    .replace(/[^a-zA-Z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+
+  return `${slug || 'id'}-${stableHash(source)}`;
+}
+
 function eventUid(seriesId, sourceDate, singleUid = '') {
   if (seriesId && sourceDate) {
     return `series-${sanitizeUid(seriesId)}-${sourceDate}@orchestra.hse.ru`;
   }
   return `single-${sanitizeUid(singleUid)}@orchestra.hse.ru`;
-}
-
-function sanitizeUid(value) {
-  const out = clean(value)
-    .normalize('NFKD')
-    .replace(/[^a-zA-Z0-9._-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .toLowerCase();
-  return out || 'event';
 }
 
 export function makeEvent(data) {
@@ -450,6 +464,11 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
     writeFile(path.join(outDir, 'rehearsals.ics'), calendarToIcs(rehearsals, `${CALENDAR_NAME} — Репетиции`, now), 'utf8'),
     writeFile(path.join(outDir, 'concerts.ics'), calendarToIcs(concerts, `${CALENDAR_NAME} — Концерты`, now), 'utf8'),
     writeFile(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n', 'utf8'),
+    writeFile(
+      path.join(outDir, 'meta.js'),
+      `window.HSE_ORCHESTRA_CALENDAR_META = ${JSON.stringify(meta)};\n`,
+      'utf8',
+    ),
     writeFile(path.join(outDir, 'index.html'), htmlPage(meta), 'utf8'),
     writeFile(path.join(outDir, '.nojekyll'), '', 'utf8'),
   ]);
