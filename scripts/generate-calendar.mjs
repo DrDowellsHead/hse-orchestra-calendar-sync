@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -478,8 +478,11 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
 
   await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });
+  await mkdir(path.join(outDir, 'assets'), { recursive: true });
 
   await Promise.all([
+    copyFile('site-assets/calendar.css', path.join(outDir, 'assets', 'calendar.css')),
+    copyFile('site-assets/calendar.js', path.join(outDir, 'assets', 'calendar.js')),
     writeFile(path.join(outDir, 'all.ics'), calendarToIcs(events, CALENDAR_NAME, now), 'utf8'),
     writeFile(path.join(outDir, 'rehearsals.ics'), calendarToIcs(rehearsals, `${CALENDAR_NAME} — Репетиции`, now), 'utf8'),
     writeFile(path.join(outDir, 'concerts.ics'), calendarToIcs(concerts, `${CALENDAR_NAME} — Концерты`, now), 'utf8'),
