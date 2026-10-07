@@ -1485,6 +1485,16 @@
                     typedEgg
                 ) {
 
+                    /*
+                     * Перехватываем уже распознанную длинную команду
+                     * на capture-фазе. Это не даёт старому inline-коду
+                     * (если он всё ещё закэширован Tilda/браузером)
+                     * отдельно увидеть хвост BACH / БАХ внутри
+                     * OFFENBACH / ОФФЕНБАХ.
+                     */
+                    event.stopImmediatePropagation();
+
+
                     triggerMusicalEgg(
                         typedEgg
                     );
@@ -1495,7 +1505,8 @@
 
                 }
 
-            }
+            },
+            true
         );
 
     }
