@@ -11,6 +11,8 @@
 - `https://drdowellshead.github.io/hse-orchestra-calendar-sync/all.ics` — всё расписание;
 - `https://drdowellshead.github.io/hse-orchestra-calendar-sync/rehearsals.ics` — репетиции;
 - `https://drdowellshead.github.io/hse-orchestra-calendar-sync/concerts.ics` — концерты;
+- `https://drdowellshead.github.io/hse-orchestra-calendar-sync/meetings.ics` — собрания;
+- `https://drdowellshead.github.io/hse-orchestra-calendar-sync/other.ics` — другие события;
 - `https://drdowellshead.github.io/hse-orchestra-calendar-sync/meta.json` — техническая информация о последней генерации.
 
 ## Частота обновления
