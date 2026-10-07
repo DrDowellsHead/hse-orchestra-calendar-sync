@@ -1,0 +1,1404 @@
+/* ==========================================
+   HSE ORCHESTRA — CALENDAR
+   ========================================== */
+
+.uc-orch-feed {
+    display: none !important;
+}
+
+.orch-calendar {
+
+    --orch-border: rgba(0, 0, 0, 0.14);
+    --orch-muted: rgba(0, 0, 0, 0.58);
+    --orch-soft: rgba(0, 0, 0, 0.055);
+    --orch-strong: #111111;
+    --orch-bg: #ffffff;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    font-family: inherit;
+    color: inherit;
+}
+
+
+.orch-calendar button {
+    font-family: inherit;
+}
+
+
+/* ---------- ШАПКА ---------- */
+
+.orch-calendar__toolbar {
+
+    display: grid;
+
+    grid-template-columns:
+        44px
+        1fr
+        44px;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.orch-calendar__month {
+
+    text-align: center;
+
+    font-size: clamp(
+        24px,
+        3vw,
+        38px
+    );
+
+    font-weight: 600;
+
+    text-transform: capitalize;
+}
+
+
+.orch-cal-btn,
+.orch-link-btn,
+.orch-details__ics,
+.orch-details__link {
+
+    border:
+        1px solid
+        var(--orch-border);
+
+    background:
+        var(--orch-bg);
+
+    color: inherit;
+
+    cursor: pointer;
+}
+
+
+.orch-cal-btn {
+
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+}
+
+
+/* ---------- ФИЛЬТРЫ ---------- */
+
+.orch-calendar__subbar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    gap: 16px;
+
+    margin:
+        22px 0 18px;
+}
+
+
+.orch-filters {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.orch-filter,
+.orch-link-btn {
+
+    border:
+        1px solid
+        var(--orch-border);
+
+    background:
+        var(--orch-bg);
+
+    border-radius: 999px;
+
+    padding:
+        9px 14px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.orch-filter.is-active {
+
+    background:
+        var(--orch-strong);
+
+    color: #ffffff;
+
+    border-color:
+        var(--orch-strong);
+}
+
+
+.orch-calendar__tools {
+
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    justify-content:
+        flex-end;
+}
+
+
+/* ---------- СЕТКА ---------- */
+
+.orch-weekdays,
+.orch-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            7,
+            minmax(0, 1fr)
+        );
+}
+
+
+.orch-weekdays {
+
+    border-top:
+        1px solid
+        var(--orch-border);
+
+    border-left:
+        1px solid
+        var(--orch-border);
+}
+
+
+.orch-weekdays span {
+
+    padding:
+        10px 8px;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    color:
+        var(--orch-muted);
+
+    border-right:
+        1px solid
+        var(--orch-border);
+
+    border-bottom:
+        1px solid
+        var(--orch-border);
+}
+
+
+.orch-grid {
+
+    border-left:
+        1px solid
+        var(--orch-border);
+}
+
+
+.orch-mobile-agenda {
+    display: none;
+}
+
+
+/* ---------- ПОДПИСКА ---------- */
+
+.orch-calendar__sync-status {
+    margin: -8px 0 16px;
+    color: var(--orch-muted);
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: right;
+}
+
+.orch-subscribe-modal[hidden] {
+    display: none !important;
+}
+
+.orch-subscribe-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.orch-subscribe-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 31, 45, 0.58);
+    backdrop-filter: blur(5px);
+}
+
+.orch-subscribe-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(680px, 100%);
+    max-height: min(760px, calc(100vh - 40px));
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 28px;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 30px 100px rgba(16, 31, 47, 0.28);
+}
+
+.orch-subscribe-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.055);
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.orch-subscribe-modal__eyebrow {
+    padding-right: 48px;
+    color: #355d83;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.orch-subscribe-modal__title {
+    margin-top: 8px;
+    padding-right: 48px;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+}
+
+.orch-subscribe-modal__intro {
+    margin-top: 12px;
+    color: #516273;
+    line-height: 1.55;
+}
+
+.orch-subscribe-modal__choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.orch-subscribe-choice[data-calendar-key="all"] {
+    grid-column: 1 / -1;
+}
+
+.orch-subscribe-choice {
+    min-width: 0;
+    padding: 15px;
+    text-align: left;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 16px;
+    background: #ffffff;
+    color: inherit;
+    cursor: pointer;
+}
+
+.orch-subscribe-choice strong,
+.orch-subscribe-choice span {
+    display: block;
+}
+
+.orch-subscribe-choice strong {
+    font-size: 15px;
+}
+
+.orch-subscribe-choice span {
+    margin-top: 5px;
+    color: #657688;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.orch-subscribe-choice.is-active {
+    border-color: #355d83;
+    box-shadow: inset 0 0 0 1px #355d83;
+    background: rgba(53, 93, 131, 0.055);
+}
+
+.orch-subscribe-modal__actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.orch-subscribe-action {
+    padding: 13px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 999px;
+    background: #ffffff;
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.orch-subscribe-action--primary {
+    border-color: #355d83;
+    background: #355d83;
+    color: #ffffff;
+}
+
+.orch-subscribe-modal__note {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(53, 93, 131, 0.07);
+    color: #516273;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.orch-subscribe-modal__updated {
+    margin-top: 14px;
+    color: #788897;
+    font-size: 12px;
+}
+
+@media (max-width: 640px) {
+    .orch-subscribe-modal {
+        align-items: end;
+        padding: 12px;
+    }
+
+    .orch-subscribe-modal__panel {
+        max-height: calc(100vh - 24px);
+        padding: 22px 18px;
+        border-radius: 22px;
+    }
+
+    .orch-subscribe-modal__choices,
+    .orch-subscribe-modal__actions {
+        grid-template-columns: 1fr;
+    }
+
+    .orch-subscribe-choice[data-calendar-key="all"] {
+        grid-column: auto;
+    }
+
+    .orch-calendar__sync-status {
+        margin-top: -4px;
+        text-align: left;
+    }
+}
+
+/* ---------- ДЕНЬ ---------- */
+
+.orch-day {
+
+    min-height: 128px;
+
+    padding: 10px;
+
+    border-right:
+        1px solid
+        var(--orch-border);
+
+    border-bottom:
+        1px solid
+        var(--orch-border);
+
+    box-sizing: border-box;
+
+    background:
+        var(--orch-bg);
+}
+
+
+.orch-day.is-outside {
+
+    background:
+        var(--orch-soft);
+}
+
+
+.orch-day__num {
+
+    font-size: 14px;
+
+    margin-bottom: 8px;
+}
+
+
+.orch-day.is-today
+.orch-day__num {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 28px;
+    height: 28px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    background:
+        var(--orch-strong);
+
+    color: #ffffff;
+}
+
+
+.orch-day__events {
+
+    display: grid;
+
+    gap: 6px;
+}
+
+
+/* ---------- СОБЫТИЕ ---------- */
+
+.orch-event-pill {
+
+    width: 100%;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    padding:
+        7px 8px;
+
+    background:
+        var(--orch-soft);
+
+    color: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    line-height: 1.3;
+}
+
+
+.orch-event-pill:hover {
+
+    background:
+        rgba(0, 0, 0, 0.1);
+}
+
+
+/* Концерт */
+
+.orch-event-pill[
+    data-type*="концерт"
+] {
+
+    background:
+        var(--orch-strong);
+
+    color: #ffffff;
+}
+
+
+/* Генеральная */
+
+.orch-event-pill[
+    data-type*="генераль"
+] {
+
+    outline:
+        1px solid
+        var(--orch-strong);
+
+    background: #ffffff;
+}
+
+
+/* ---------- ПУСТОЙ МЕСЯЦ ---------- */
+
+.orch-empty {
+
+    padding:
+        18px 0;
+
+    color:
+        var(--orch-muted);
+}
+
+
+/* ---------- КАРТОЧКА СОБЫТИЯ ---------- */
+
+.orch-details {
+
+    position: relative;
+
+    margin-top: 18px;
+
+    padding: 24px;
+
+    border:
+        1px solid
+        var(--orch-border);
+
+    border-radius: 16px;
+
+    background:
+        var(--orch-bg);
+}
+
+
+.orch-details__close {
+
+    position: absolute;
+
+    right: 14px;
+    top: 12px;
+
+    border: 0;
+
+    background: transparent;
+
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+
+.orch-details__type {
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+    color:
+        var(--orch-muted);
+}
+
+
+.orch-details__title {
+
+    margin-top: 6px;
+
+    padding-right: 34px;
+
+    font-size:
+        clamp(
+            22px,
+            2.6vw,
+            32px
+        );
+
+    font-weight: 600;
+}
+
+
+.orch-details__meta {
+
+    display: grid;
+    gap: 5px;
+
+    margin-top: 12px;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+}
+
+.orch-details__meta-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+}
+
+.orch-details__meta-date {
+    font-weight: 500;
+}
+
+.orch-details__meta-time {
+    color: var(--orch-blue);
+    font-weight: 600;
+}
+
+.orch-details__meta-location {
+    display: block;
+    margin-top: 2px;
+    color: #d9772f;
+    font-weight: 600;
+}
+
+
+.orch-details__program {
+
+    margin-top: 22px;
+    padding-top: 18px;
+
+    border-top:
+        1px solid
+        var(--orch-border);
+
+    white-space: pre-line;
+
+    font-size:
+        clamp(
+            18px,
+            2.2vw,
+            23px
+        );
+
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+
+.orch-details__program::before {
+
+    content: 'ПРОГРАММА';
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    letter-spacing: 0.14em;
+}
+
+
+.orch-details__ics {
+
+    margin-top: 18px;
+
+    border-radius: 999px;
+
+    padding:
+        12px 18px;
+}
+
+
+.orch-details__link {
+
+    display: inline-block;
+
+    margin-top: 18px;
+    margin-left: 8px;
+
+    border-radius: 999px;
+
+    padding: 12px 18px;
+
+    text-decoration: none;
+}
+
+
+.orch-details__link[hidden] {
+    display: none;
+}
+
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (
+    max-width: 760px
+) {
+
+    .orch-calendar {
+
+        padding: 10px;
+    }
+
+
+    .orch-calendar__subbar {
+
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+    }
+
+
+    .orch-calendar__toolbar {
+
+        grid-template-columns:
+            40px
+            1fr
+            40px;
+
+        gap: 8px;
+    }
+
+
+    .orch-cal-btn {
+
+        width: 40px;
+        height: 40px;
+    }
+
+
+    .orch-calendar__month {
+
+        font-size: 23px;
+    }
+
+
+    .orch-calendar__tools {
+
+        justify-content:
+            flex-start;
+
+        width: 100%;
+    }
+
+
+    .orch-weekdays,
+    .orch-grid {
+
+        display: none;
+    }
+
+
+    .orch-mobile-agenda {
+
+        display: grid;
+
+        gap: 12px;
+    }
+
+
+    .orch-mobile-day {
+
+        padding: 14px;
+
+        border:
+            1px solid
+            var(--orch-border);
+
+        border-radius: 14px;
+
+        background:
+            var(--orch-bg);
+    }
+
+
+    .orch-mobile-day__date {
+
+        margin-bottom: 10px;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        text-transform: capitalize;
+    }
+
+
+    .orch-mobile-day__events {
+
+        display: grid;
+
+        gap: 8px;
+    }
+
+
+    .orch-mobile-event {
+
+        width: 100%;
+
+        padding: 12px;
+
+        border: 0;
+        border-radius: 10px;
+
+        background:
+            var(--orch-soft);
+
+        color: inherit;
+
+        text-align: left;
+
+        cursor: pointer;
+    }
+
+
+    .orch-mobile-event__time,
+    .orch-mobile-event__title,
+    .orch-mobile-event__meta {
+
+        display: block;
+    }
+
+
+    .orch-mobile-event__time {
+
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    .orch-mobile-event__title {
+
+        margin-top: 3px;
+
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+
+    .orch-mobile-event__meta {
+
+        margin-top: 5px;
+
+        color:
+            var(--orch-muted);
+
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+
+    .orch-details {
+
+        padding: 20px 16px;
+    }
+
+
+    .orch-details__ics,
+    .orch-details__link {
+
+        display: block;
+
+        width: 100%;
+
+        margin-left: 0;
+
+        box-sizing: border-box;
+
+        text-align: center;
+    }
+
+
+    .orch-weekdays span {
+
+        font-size: 10px;
+
+        padding:
+            8px 2px;
+    }
+
+
+    .orch-day {
+
+        min-height: 86px;
+
+        padding:
+            6px 4px;
+    }
+
+
+    .orch-day__num {
+
+        font-size: 12px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .orch-event-pill {
+
+        padding: 5px;
+
+        font-size: 10px;
+    }
+
+}
+
+
+/* ==========================================
+   ФИРМЕННЫЙ СЛОЙ — VERSION 3
+   ========================================== */
+
+.orch-calendar-record {
+    padding: 72px 20px 88px !important;
+    background: #eef1f3 !important;
+    box-sizing: border-box;
+}
+
+.orch-calendar {
+    --orch-ink: #172231;
+    --orch-blue: #355574;
+    --orch-blue-soft: #eaf0f5;
+    --orch-gold: #efb83c;
+    --orch-paper: #ffffff;
+    --orch-canvas: #eef1f3;
+    --orch-border: rgba(38, 59, 79, 0.14);
+    --orch-muted: #687585;
+    --orch-soft: #f2f5f7;
+    --orch-strong: #172231;
+    --orch-bg: #ffffff;
+
+    max-width: 1160px;
+    padding: clamp(24px, 4vw, 52px);
+    border: 1px solid rgba(38, 59, 79, 0.1);
+    border-radius: 28px;
+    background: var(--orch-paper);
+    box-shadow: 0 24px 70px rgba(36, 52, 68, 0.09);
+    color: var(--orch-ink);
+    font-family: TildaSansWeb, Arial, sans-serif;
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.orch-calendar__eyebrow {
+    margin-bottom: 18px;
+    color: var(--orch-blue);
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.orch-calendar__month {
+    color: var(--orch-ink);
+    font-size: clamp(30px, 4vw, 48px);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    cursor: default;
+    user-select: none;
+}
+
+.orch-cal-btn,
+.orch-link-btn,
+.orch-details__ics,
+.orch-details__link,
+.orch-filter {
+    border-color: var(--orch-border);
+    color: var(--orch-ink);
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.orch-cal-btn {
+    background: transparent;
+}
+
+.orch-cal-btn:hover,
+.orch-link-btn:hover,
+.orch-details__ics:hover,
+.orch-details__link:hover {
+    border-color: var(--orch-blue);
+    background: var(--orch-blue);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.orch-calendar__subbar {
+    margin: 28px 0 20px;
+}
+
+.orch-filter,
+.orch-link-btn {
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.035em;
+}
+
+.orch-filter.is-active {
+    border-color: var(--orch-blue);
+    background: var(--orch-blue);
+}
+
+.orch-weekdays {
+    overflow: hidden;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+
+.orch-weekdays span {
+    padding: 12px 8px;
+    color: var(--orch-muted);
+    background: #f8fafb;
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.orch-day {
+    position: relative;
+    min-height: 126px;
+    padding: 10px;
+    background: #ffffff;
+    transition: background 0.18s ease;
+}
+
+.orch-day:hover {
+    background: #fbfcfd;
+}
+
+.orch-day.is-outside {
+    background: #f4f6f7;
+    color: #9ba5af;
+}
+
+.orch-day__num {
+    color: var(--orch-muted);
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.orch-day.is-today .orch-day__num {
+    background: var(--orch-blue);
+}
+
+.orch-event-pill {
+    position: relative;
+    overflow: hidden;
+    padding: 8px 9px 8px 12px;
+    border-radius: 7px;
+    background: var(--orch-blue-soft);
+    color: var(--orch-ink);
+    font-family: TildaSansWeb, Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.28;
+}
+
+.orch-event-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--orch-gold);
+}
+
+.orch-event-pill:hover {
+    background: #dfe8f0;
+}
+
+.orch-event-pill[data-type*="концерт"] {
+    background: var(--orch-blue);
+    color: #ffffff;
+}
+
+.orch-event-pill[data-type*="концерт"]::before {
+    background: var(--orch-gold);
+}
+
+.orch-details {
+    overflow: hidden;
+    margin-top: 24px;
+    padding: 30px;
+    border-radius: 18px;
+    background: #f7f9fa;
+}
+
+.orch-details::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, var(--orch-blue), var(--orch-gold));
+}
+
+.orch-details__type {
+    color: var(--orch-blue);
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+}
+
+.orch-details__title {
+    font-size: clamp(25px, 3vw, 36px);
+    letter-spacing: -0.025em;
+}
+
+.orch-details__meta,
+.orch-details__program {
+    color: #39495a;
+}
+
+.orch-details__ics {
+    border-color: var(--orch-blue);
+    background: var(--orch-blue);
+    color: #ffffff;
+}
+
+.orch-details__ics:hover {
+    border-color: var(--orch-ink);
+    background: var(--orch-ink);
+}
+
+.orch-calendar__footer-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    color: var(--orch-muted);
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.035em;
+    text-align: center;
+}
+
+.orch-secret-note {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--orch-gold);
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.orch-secret-note:hover {
+    background: #fff6dc;
+    transform: rotate(-8deg) scale(1.08);
+}
+
+.orch-toast {
+    position: fixed;
+    z-index: 99999;
+    left: 50%;
+    bottom: 26px;
+    max-width: min(420px, calc(100vw - 32px));
+    padding: 13px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: var(--orch-ink);
+    box-shadow: 0 14px 42px rgba(8, 19, 31, 0.28);
+    color: #ffffff;
+    font-size: 13px;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+    transform: translate(-50%, 18px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.orch-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.orch-day__secrets {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    max-width: calc(100% - 38px);
+}
+
+.orch-day__secret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    min-height: 18px;
+    padding: 1px 3px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--orch-gold);
+    font-family: TTNorms, TildaSansWeb, Arial, sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.035em;
+    cursor: pointer;
+    transition: transform 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.orch-day__secret:hover {
+    background: #ffffff;
+    color: var(--orch-blue);
+    transform: scale(1.12);
+}
+
+.orch-calendar.is-beethoven {
+    animation: orch-beethoven-pulse 1.4s ease;
+    box-shadow: 0 25px 90px rgba(239, 184, 60, 0.28);
+}
+
+.orch-calendar.is-beethoven .orch-calendar__month {
+    color: var(--orch-blue);
+}
+
+.orch-calendar.is-bach {
+    animation: orch-bach-counterpoint 1.8s ease;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 22px,
+        rgba(53, 85, 116, 0.045) 23px,
+        transparent 24px
+    );
+    box-shadow: 0 25px 90px rgba(53, 85, 116, 0.2);
+}
+
+.orch-calendar.is-tchaikovsky {
+    animation: orch-tchaikovsky-waltz 2.4s ease;
+    box-shadow: 0 25px 90px rgba(131, 164, 190, 0.3);
+}
+
+.orch-calendar.is-tchaikovsky .orch-secret-note {
+    animation: orch-note-waltz 1.2s ease-in-out 2;
+}
+
+.orch-calendar.is-mission {
+    animation: orch-mission-pulse 1.9s steps(5, end);
+    box-shadow:
+        0 25px 90px rgba(23, 34, 49, 0.3),
+        inset 0 0 0 3px #c94d43;
+}
+
+.orch-calendar.is-mission .orch-calendar__eyebrow {
+    color: #c94d43;
+}
+
+@keyframes orch-beethoven-pulse {
+    0%, 100% { transform: translateY(0); }
+    22% { transform: translateY(-3px); }
+    38% { transform: translateY(0); }
+    54% { transform: translateY(-3px); }
+}
+
+@keyframes orch-bach-counterpoint {
+    0%, 100% { background-position: 0 0; }
+    50% { background-position: 0 24px; }
+}
+
+@keyframes orch-tchaikovsky-waltz {
+    0%, 100% { transform: rotate(0); }
+    33% { transform: rotate(-0.25deg); }
+    66% { transform: rotate(0.25deg); }
+}
+
+@keyframes orch-note-waltz {
+    0%, 100% { transform: rotate(0) scale(1); }
+    50% { transform: rotate(16deg) scale(1.2); }
+}
+
+@keyframes orch-mission-pulse {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-2px); }
+    40% { transform: translateX(2px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .orch-calendar.is-beethoven,
+    .orch-calendar.is-bach,
+    .orch-calendar.is-tchaikovsky,
+    .orch-calendar.is-mission,
+    .orch-calendar.is-tchaikovsky .orch-secret-note {
+        animation: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .orch-calendar-record {
+        padding: 28px 12px 48px !important;
+    }
+
+    .orch-calendar {
+        padding: 22px 16px;
+        border-radius: 20px;
+    }
+
+    .orch-calendar__eyebrow {
+        margin-bottom: 13px;
+        font-size: 9px;
+    }
+
+    .orch-calendar__month {
+        font-size: clamp(23px, 7.5vw, 31px);
+    }
+
+    .orch-calendar__subbar {
+        margin-top: 22px;
+    }
+
+    .orch-mobile-day {
+        padding: 16px;
+        border-radius: 14px;
+        background: #f8fafb;
+    }
+
+    .orch-mobile-event {
+        position: relative;
+        overflow: hidden;
+        padding: 13px 14px 13px 17px;
+        background: var(--orch-blue-soft);
+    }
+
+    .orch-mobile-event::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 3px;
+        background: var(--orch-gold);
+    }
+
+    .orch-calendar__footer-note {
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .orch-toast {
+        bottom: 16px;
+        border-radius: 16px;
+    }
+}
