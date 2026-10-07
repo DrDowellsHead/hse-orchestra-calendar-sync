@@ -287,12 +287,21 @@ function utcStamp(date = new Date()) {
     .replace(/\.\d{3}Z$/, 'Z');
 }
 
+export function cleanProgramText(value) {
+  return clean(value)
+    .replace(/^\s*программа\s*:\s*/iu, '')
+    .trim();
+}
+
 function eventDescription(event) {
   const parts = [];
+  const program = cleanProgramText(event.program);
+
   if (event.type) parts.push(event.type);
-  if (event.program) parts.push(`Программа:\n${event.program}`);
+  if (program) parts.push(`Программа:\n${program}`);
   if (event.note) parts.push(event.note);
   if (event.url) parts.push(event.url);
+
   return parts.join('\n\n');
 }
 
@@ -350,8 +359,10 @@ export function calendarToIcs(events, name, generatedAt = new Date()) {
     'METHOD:PUBLISH',
     `X-WR-CALNAME:${icsEscape(name)}`,
     `X-WR-TIMEZONE:${TZ}`,
-    'REFRESH-INTERVAL;VALUE=DURATION:P15D',
-    'X-PUBLISHED-TTL:P15D',
+    // Клиенты могут проверять подписку чаще, чем GitHub пересобирает источник.
+    // Это важно после ручного запуска workflow при срочной отмене/переносе.
+    'REFRESH-INTERVAL;VALUE=DURATION:P1D',
+    'X-PUBLISHED-TTL:P1D',
     timezoneBlock(),
     ...body,
     'END:VCALENDAR',
