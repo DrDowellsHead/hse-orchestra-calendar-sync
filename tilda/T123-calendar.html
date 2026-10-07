@@ -1,0 +1,263 @@
+<div id="orch-calendar" class="orch-calendar">
+
+    <div class="orch-calendar__eyebrow">
+        Расписание оркестра
+    </div>
+
+    <div class="orch-calendar__toolbar">
+        <button type="button"
+                class="orch-cal-btn"
+                data-orch-action="prev"
+                aria-label="Предыдущий месяц">
+            ←
+        </button>
+
+        <div class="orch-calendar__month"
+             id="orch-month-label">
+        </div>
+
+        <button type="button"
+                class="orch-cal-btn"
+                data-orch-action="next"
+                aria-label="Следующий месяц">
+            →
+        </button>
+    </div>
+
+
+    <div class="orch-calendar__subbar">
+
+        <div id="orch-filters"
+             class="orch-filters">
+        </div>
+
+        <div class="orch-calendar__tools">
+
+            <button type="button"
+                    class="orch-link-btn"
+                    data-orch-action="today">
+                Сегодня
+            </button>
+
+            <button type="button"
+                    class="orch-link-btn"
+                    id="orch-subscribe-open">
+                Синхронизировать календарь
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="orch-calendar__sync-status"
+         id="orch-calendar-sync-status"
+         role="status"
+         aria-live="polite">
+        Проверяем время последней синхронизации…
+    </div>
+
+
+    <div class="orch-weekdays">
+        <span>Пн</span>
+        <span>Вт</span>
+        <span>Ср</span>
+        <span>Чт</span>
+        <span>Пт</span>
+        <span>Сб</span>
+        <span>Вс</span>
+    </div>
+
+
+    <div id="orch-grid"
+         class="orch-grid">
+    </div>
+
+
+    <div id="orch-mobile-agenda"
+         class="orch-mobile-agenda">
+    </div>
+
+
+    <div id="orch-calendar-empty"
+         class="orch-empty"
+         hidden>
+        В этом месяце событий нет.
+    </div>
+
+    <div id="orch-subscribe-modal"
+         class="orch-subscribe-modal"
+         hidden>
+
+        <div class="orch-subscribe-modal__backdrop"
+             data-orch-subscribe-close></div>
+
+        <div class="orch-subscribe-modal__panel"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="orch-subscribe-title">
+
+            <button type="button"
+                    class="orch-subscribe-modal__close"
+                    data-orch-subscribe-close
+                    aria-label="Закрыть">
+                ×
+            </button>
+
+            <div class="orch-subscribe-modal__eyebrow">
+                СИНХРОНИЗАЦИЯ
+            </div>
+
+            <div class="orch-subscribe-modal__title"
+                 id="orch-subscribe-title">
+                Подписаться на календарь
+            </div>
+
+            <div class="orch-subscribe-modal__intro">
+                Это постоянная подписка. Новые события, переносы и отмены
+                будут появляться в календаре автоматически после обновления источника.
+            </div>
+
+            <div class="orch-subscribe-modal__choices"
+                 id="orch-subscribe-choices">
+
+                <button type="button"
+                        class="orch-subscribe-choice is-active"
+                        data-calendar-key="all">
+                    <strong>Всё расписание</strong>
+                    <span>Репетиции, концерты и другие события</span>
+                </button>
+
+                <button type="button"
+                        class="orch-subscribe-choice"
+                        data-calendar-key="rehearsals">
+                    <strong>Репетиции</strong>
+                    <span>Только репетиции</span>
+                </button>
+
+                <button type="button"
+                        class="orch-subscribe-choice"
+                        data-calendar-key="concerts">
+                    <strong>Концерты</strong>
+                    <span>Только концерты</span>
+                </button>
+
+                <button type="button"
+                        class="orch-subscribe-choice"
+                        data-calendar-key="meetings">
+                    <strong>Собрания</strong>
+                    <span>Только собрания</span>
+                </button>
+
+                <button type="button"
+                        class="orch-subscribe-choice"
+                        data-calendar-key="other">
+                    <strong>Другие</strong>
+                    <span>Все остальные события</span>
+                </button>
+
+            </div>
+
+            <div class="orch-subscribe-modal__actions">
+                <button type="button"
+                        class="orch-subscribe-action orch-subscribe-action--primary"
+                        id="orch-subscribe-apple">
+                    Apple Calendar
+                </button>
+
+                <button type="button"
+                        class="orch-subscribe-action"
+                        id="orch-subscribe-google">
+                    Google Calendar
+                </button>
+
+                <button type="button"
+                        class="orch-subscribe-action"
+                        id="orch-subscribe-copy">
+                    Скопировать ссылку
+                </button>
+            </div>
+
+            <div class="orch-subscribe-modal__note">
+                «Добавить только это событие (.ics)» внутри карточки события —
+                разовое добавление и не синхронизируется с последующими изменениями.
+            </div>
+
+            <div class="orch-subscribe-modal__updated"
+                 id="orch-calendar-updated">
+                Проверяем время последнего обновления…
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="orch-event-details"
+         class="orch-details"
+         hidden>
+
+        <button type="button"
+                class="orch-details__close"
+                aria-label="Закрыть">
+            ×
+        </button>
+
+        <div class="orch-details__type"
+             id="orch-details-type">
+        </div>
+
+        <div class="orch-details__title"
+             id="orch-details-title">
+        </div>
+
+        <div class="orch-details__meta"
+             id="orch-details-meta">
+        </div>
+
+        <div class="orch-details__program"
+             id="orch-details-program">
+        </div>
+
+        <button type="button"
+                class="orch-details__ics"
+                id="orch-details-ics">
+            Добавить только это событие (.ics)
+        </button>
+
+        <a class="orch-details__link"
+           id="orch-details-link"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           hidden>
+            Открыть ссылку
+        </a>
+
+    </div>
+
+
+    <div class="orch-calendar__footer-note">
+        <span>Все события указаны по московскому времени</span>
+
+        <button type="button"
+                id="orch-secret-note"
+                class="orch-secret-note"
+                aria-label="Музыкальная пасхалка"
+                title="Тс-с-с…">
+            ♪
+        </button>
+    </div>
+
+
+    <div id="orch-toast"
+         class="orch-toast"
+         role="status"
+         aria-live="polite">
+    </div>
+
+</div>
+
+<link rel="stylesheet"
+      href="https://drdowellshead.github.io/hse-orchestra-calendar-sync/assets/calendar.css?v=4.1">
+
+<script src="https://drdowellshead.github.io/hse-orchestra-calendar-sync/assets/calendar.js?v=4.1"></script>
