@@ -1195,43 +1195,48 @@
         value
     ) {
 
-        const entries =
+        /*
+         * Ищем совпадение не по порядку композиторов,
+         * а среди ВСЕХ псевдонимов сразу.
+         *
+         * Это важно для OFFENBACH / ОФФЕНБАХ:
+         * обе строки заканчиваются на BACH / БАХ.
+         * Поэтому сначала проверяем самые длинные
+         * возможные команды.
+         */
+
+        const aliases =
             Object.entries(
                 MUSICAL_EASTER_EGGS
+            )
+            .flatMap(
+                ([key, egg]) =>
+                    egg.aliases.map(
+                        alias => ({
+                            key,
+                            alias
+                        })
+                    )
+            )
+            .sort(
+                (a, b) =>
+                    b.alias.length -
+                    a.alias.length
             );
 
 
-        for (
-            const [key, egg]
-            of entries
-        ) {
-
-            const aliases =
-                [...egg.aliases]
-                .sort(
-                    (a, b) =>
-                        b.length -
-                        a.length
-                );
+        const match =
+            aliases.find(
+                item =>
+                    value.endsWith(
+                        item.alias
+                    )
+            );
 
 
-            if (
-                aliases.some(
-                    alias =>
-                        value.endsWith(
-                            alias
-                        )
-                )
-            ) {
-
-                return key;
-
-            }
-
-        }
-
-
-        return null;
+        return match
+            ? match.key
+            : null;
 
     }
 
