@@ -1,0 +1,51 @@
+name: Publish orchestra calendars
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub cron cannot express a rolling "every 15 days" interval.
+    # 1st + 16th is the stable calendar equivalent requested.
+    - cron: '17 3 1,16 * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: orchestra-calendar-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run tests
+        run: node --test scripts/generate-calendar.test.mjs
+
+      - name: Generate calendars from Tilda
+        run: node scripts/generate-calendar.mjs
+
+      - name: Publish gh-pages branch
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cd public
+          git init
+          git checkout -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish orchestra calendars"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
