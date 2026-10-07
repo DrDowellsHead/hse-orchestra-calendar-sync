@@ -264,8 +264,11 @@ export function extractEvents(posts) {
 
 export function eventBucket(event) {
   const type = normalized(event.type);
+
   if (type.includes('конц')) return 'concerts';
   if (type.includes('репет')) return 'rehearsals';
+  if (type.includes('собран')) return 'meetings';
+
   return 'other';
 }
 
@@ -442,8 +445,10 @@ h1{font-size:34px;margin:0 0 10px}p{line-height:1.55;color:#506074}.grid{display
 ${link('all.ics','Всё расписание','Репетиции, концерты и другие события')}
 ${link('rehearsals.ics','Репетиции','Только репетиции')}
 ${link('concerts.ics','Концерты','Только концерты')}
+${link('meetings.ics','Собрания','Только собрания')}
+${link('other.ics','Другие','Все остальные события')}
 </div>
-<p class="meta">Источник обновлён: ${stamp} МСК · Событий: ${meta.counts.all}, репетиций: ${meta.counts.rehearsals}, концертов: ${meta.counts.concerts}, отмен: ${meta.counts.cancelled}.</p>
+<p class="meta">Источник обновлён: ${stamp} МСК · Событий: ${meta.counts.all}, репетиций: ${meta.counts.rehearsals}, концертов: ${meta.counts.concerts}, собраний: ${meta.counts.meetings}, других: ${meta.counts.other}, отмен: ${meta.counts.cancelled}.</p>
 </body>
 </html>`;
 }
@@ -454,6 +459,8 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
 
   const rehearsals = events.filter((event) => eventBucket(event) === 'rehearsals');
   const concerts = events.filter((event) => eventBucket(event) === 'concerts');
+  const meetings = events.filter((event) => eventBucket(event) === 'meetings');
+  const other = events.filter((event) => eventBucket(event) === 'other');
 
   const meta = {
     feedUid: FEED_UID,
@@ -463,6 +470,8 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
       all: events.length,
       rehearsals: rehearsals.length,
       concerts: concerts.length,
+      meetings: meetings.length,
+      other: other.length,
       cancelled: events.filter((event) => event.cancelled).length,
     },
   };
@@ -474,6 +483,8 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
     writeFile(path.join(outDir, 'all.ics'), calendarToIcs(events, CALENDAR_NAME, now), 'utf8'),
     writeFile(path.join(outDir, 'rehearsals.ics'), calendarToIcs(rehearsals, `${CALENDAR_NAME} — Репетиции`, now), 'utf8'),
     writeFile(path.join(outDir, 'concerts.ics'), calendarToIcs(concerts, `${CALENDAR_NAME} — Концерты`, now), 'utf8'),
+    writeFile(path.join(outDir, 'meetings.ics'), calendarToIcs(meetings, `${CALENDAR_NAME} — Собрания`, now), 'utf8'),
+    writeFile(path.join(outDir, 'other.ics'), calendarToIcs(other, `${CALENDAR_NAME} — Другие события`, now), 'utf8'),
     writeFile(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n', 'utf8'),
     writeFile(
       path.join(outDir, 'meta.js'),
