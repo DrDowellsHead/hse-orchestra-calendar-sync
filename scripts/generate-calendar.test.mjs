@@ -118,10 +118,11 @@ test('moved occurrence keeps the same stable UID', () => {
   assert.equal(moved.location, 'Актовый зал');
 });
 
-test('concerts and rehearsals are classified separately', () => {
+test('event types are classified into separate subscription feeds', () => {
   assert.equal(eventBucket({ type: 'Концерт' }), 'concerts');
   assert.equal(eventBucket({ type: 'Генеральная репетиция' }), 'rehearsals');
-  assert.equal(eventBucket({ type: 'Собрание' }), 'other');
+  assert.equal(eventBucket({ type: 'Собрание' }), 'meetings');
+  assert.equal(eventBucket({ type: 'Другое' }), 'other');
 });
 
 test('extractEvents applies series changes', () => {
