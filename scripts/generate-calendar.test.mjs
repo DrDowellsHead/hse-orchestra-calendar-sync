@@ -74,7 +74,7 @@ test('one occurrence can be cancelled without deleting the series', () => {
   assert.equal(changed[2].cancelled, false);
 
   const ics = calendarToIcs(changed, 'Test', new Date('2026-10-07T17:00:00Z'));
-  assert.match(ics, /UID:series-main-rehearsals-2026-10-16@orchestra\.hse\.ru/);
+  assert.match(ics, /UID:series-main-rehearsals-[0-9a-f]{8}-2026-10-16@orchestra\.hse\.ru/);
   assert.match(ics, /STATUS:CANCELLED/);
 });
 
@@ -153,4 +153,24 @@ test('extractEvents applies series changes', () => {
   const events = extractEvents(posts);
   assert.equal(events.length, 1);
   assert.equal(events[0].cancelled, true);
+});
+
+
+test('Cyrillic series IDs do not collapse to the same UID', () => {
+  const makeSeries = (id) => seriesEvents({
+    uid: id,
+    fields: {
+      title: 'Репетиция',
+      select: 'Репетиция',
+      select2: 'Серия',
+      'custom-date2': '16.10.2026',
+      'custom-date3': '16.10.2026',
+      input5: id,
+      number5: true,
+      input2: '18:30',
+      input3: '21:30',
+    },
+  })[0];
+
+  assert.notEqual(makeSeries('репетиции').uid, makeSeries('концерты').uid);
 });
