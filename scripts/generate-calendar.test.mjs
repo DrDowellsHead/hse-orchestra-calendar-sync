@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   applyChanges,
   calendarToIcs,
+  cleanProgramText,
   eventBucket,
   extractEvents,
   parseDateText,
@@ -173,4 +174,33 @@ test('Cyrillic series IDs do not collapse to the same UID', () => {
   })[0];
 
   assert.notEqual(makeSeries('репетиции').uid, makeSeries('концерты').uid);
+});
+
+
+test('program label is normalized before ICS generation', () => {
+  assert.equal(
+    cleanProgramText('Программа:\nГеоргий Свиридов\n1. Тройка'),
+    'Георгий Свиридов\n1. Тройка',
+  );
+
+  const ics = calendarToIcs([{
+    uid: 'concert-test@orchestra.hse.ru',
+    title: 'Концерт',
+    type: 'Концерт',
+    dateKey: '2026-10-16',
+    sourceDate: '2026-10-16',
+    seriesId: '',
+    startTime: '18:30',
+    endTime: '20:00',
+    location: '',
+    program: 'Программа:\nГеоргий Свиридов',
+    note: '',
+    url: '',
+    cancelled: false,
+    changed: false,
+  }], 'Test', new Date('2026-10-07T17:00:00Z'));
+
+  assert.match(ics, /Программа:\\nГеоргий Свиридов/);
+  assert.doesNotMatch(ics, /Программа:\\nПрограмма:/);
+  assert.match(ics, /REFRESH-INTERVAL;VALUE=DURATION:P1D/);
 });
