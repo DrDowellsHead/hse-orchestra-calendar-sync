@@ -106,6 +106,8 @@
 
     let monthTravelClicks = 0;
 
+    let keyboardHintShown = false;
+
 
     function decorateCalendarRecord() {
 
@@ -120,6 +122,52 @@
         record?.classList.add(
             'orch-calendar-record'
         );
+
+
+        const footer =
+            $('.orch-calendar__footer-note');
+
+
+        if (
+            footer
+            &&
+            !$('.orch-keyboard-hint', footer)
+        ) {
+
+            const hint =
+                document.createElement(
+                    'span'
+                );
+
+
+            hint.className =
+                'orch-keyboard-hint';
+
+
+            hint.textContent =
+                'Не все темы начинаются с ноты.';
+
+
+            footer.insertBefore(
+                hint,
+                footer.firstChild
+            );
+
+        }
+
+
+        const secretNote =
+            $('#orch-secret-note');
+
+
+        if (
+            secretNote
+        ) {
+
+            secretNote.title =
+                'Псс… клавиатура тоже инструмент.';
+
+        }
 
     }
 
@@ -2136,7 +2184,10 @@
                     'Дирижёр видит даже пустые такты.',
                     'Сначала настройка. Потом настройка.',
                     'В календаре пауза — тоже музыка.',
-                    'Тихо считается только до первого вступления.'
+                    'Тихо считается только до первого вступления.',
+                    'Некоторые фамилии здесь лучше не произносить. Их лучше набрать.',
+                    'У этого инструмента больше клавиш, чем кажется.',
+                    'Фамилии композиторов здесь иногда звучат громче нот.'
                 ];
 
 
@@ -2266,6 +2317,25 @@
                 ) {
 
                     return;
+
+                }
+
+
+                if (
+                    !keyboardHintShown
+                    &&
+                    /[A-Za-zА-Яа-яЁё]/u.test(
+                        event.key
+                    )
+                ) {
+
+                    keyboardHintShown =
+                        true;
+
+
+                    showToast(
+                        'Календарь слушает.'
+                    );
 
                 }
 
