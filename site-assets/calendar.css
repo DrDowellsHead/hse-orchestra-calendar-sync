@@ -1404,11 +1404,11 @@
 }
 
 /* ==========================================
-   КОНЦЕРТЫ — СПОКОЙНАЯ ЗАЛИВКА + ЯРКИЙ АКЦЕНТ
+   КОНЦЕРТЫ — СВЕТЛО-СИНЯЯ ЗАЛИВКА + КРАСНЫЙ АКЦЕНТ
    ========================================== */
 
 .orch-event-pill[data-type*="концерт"] {
-    background: rgba(53, 85, 116, 0.12);
+    background: #dbe9f6;
     color: var(--orch-ink);
 }
 
@@ -1417,11 +1417,11 @@
 }
 
 .orch-event-pill[data-type*="концерт"]:hover {
-    background: rgba(53, 85, 116, 0.19);
+    background: #cbdff0;
 }
 
 .orch-mobile-event[data-type*="концерт"] {
-    background: rgba(53, 85, 116, 0.12);
+    background: #dbe9f6;
     color: var(--orch-ink);
 }
 
