@@ -1485,3 +1485,33 @@
         grid-template-columns: 44px minmax(0, 1fr) 44px;
     }
 }
+
+
+/* ==========================================
+   ТОНКИЙ НАМЁК НА КЛАВИАТУРНЫЕ ПАСХАЛКИ
+   ========================================== */
+
+.orch-calendar__footer-note {
+    flex-wrap: wrap;
+}
+
+.orch-keyboard-hint {
+    opacity: 0.54;
+    font-style: italic;
+    letter-spacing: 0.02em;
+}
+
+.orch-keyboard-hint::after {
+    content: ' ·';
+}
+
+@media (max-width: 640px) {
+    .orch-keyboard-hint {
+        flex-basis: 100%;
+        font-size: 10px;
+    }
+
+    .orch-keyboard-hint::after {
+        content: '';
+    }
+}
