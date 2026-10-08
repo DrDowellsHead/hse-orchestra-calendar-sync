@@ -205,7 +205,12 @@
             [392.00, 0.00, 0.13],
             [392.00, 0.17, 0.13],
             [392.00, 0.34, 0.13],
-            [311.13, 0.51, 0.55]
+            [311.13, 0.51, 0.55],
+
+            [349.23, 1.18, 0.13],
+            [349.23, 1.35, 0.13],
+            [349.23, 1.52, 0.13],
+            [293.66, 1.69, 0.66]
         ];
 
 
@@ -271,7 +276,7 @@
 
         window.setTimeout(
             () => context.close(),
-            1300
+            2700
         );
 
     }
@@ -530,13 +535,130 @@
         volume = 0.045
     ) {
 
+        const source =
+            Array.isArray(
+                notes
+            )
+
+                ? notes.filter(
+                    item =>
+                        Array.isArray(
+                            item
+                        )
+                        &&
+                        item.length >= 3
+                )
+
+                : [];
+
+
+        if (
+            !source.length
+        ) {
+
+            return;
+
+        }
+
+
+        const end =
+            Math.max(
+                ...source.map(
+                    ([, delay, duration]) =>
+                        delay + duration
+                )
+            );
+
+
+        let extended =
+            source;
+
+
+        /*
+         * Короткие цитаты стали чуть длиннее:
+         * повторяем начало той же самой музыкальной фразы,
+         * а не сочиняем продолжение за композитора.
+         */
+        if (
+            end < 3.6
+        ) {
+
+            const repeatCount =
+                Math.min(
+                    source.length,
+                    Math.max(
+                        4,
+                        Math.ceil(
+                            source.length *
+                            0.4
+                        )
+                    )
+                );
+
+
+            const opening =
+                source.slice(
+                    0,
+                    repeatCount
+                );
+
+
+            const firstDelay =
+                opening[0][1];
+
+
+            const repeatAt =
+                end + 0.22;
+
+
+            extended = [
+                ...source,
+                ...opening.map(
+                    ([note, delay, duration]) => [
+                        note,
+                        repeatAt +
+                        (
+                            delay -
+                            firstDelay
+                        ),
+                        duration
+                    ]
+                )
+            ];
+
+        }
+
+
         playToneSequence(
-            notes.map(
+            extended.map(
                 ([note, delay, duration]) => [
                     noteFrequency(
                         note
                     ),
                     delay,
+                    duration
+                ]
+            ),
+            waveform,
+            volume
+        );
+
+    }
+
+
+    function playSimpleNamedMelody(
+        noteNames,
+        step = 0.22,
+        duration = 0.18,
+        waveform = 'triangle',
+        volume = 0.045
+    ) {
+
+        playNamedToneSequence(
+            noteNames.map(
+                (note, index) => [
+                    note,
+                    index * step,
                     duration
                 ]
             ),
@@ -1128,9 +1250,685 @@
                 'sine',
                 0.052
             )
+        },
+
+        handel: {
+            aliases: ["HANDEL","HAENDEL","ГЕНДЕЛЬ"],
+            month: 1,
+            day: 23,
+            label: "GFH",
+            title: "23 февраля — день рождения Георга Фридриха Генделя",
+            className: "is-beethoven",
+            message: "Hallelujah. Тут даже календарь просит tutti.",
+            play: () => playSimpleNamedMelody(
+                ["C4","G4","A4","G4","C4","G4","A4","G4","C5","C5","B4","A4","G4","C5"],
+                0.23,
+                0.18,
+                "triangle",
+                0.048
+            )
+        },
+
+        corelli: {
+            aliases: ["CORELLI","КОРЕЛЛИ"],
+            month: 1,
+            day: 17,
+            label: "AC",
+            title: "17 февраля — день рождения Арканджело Корелли",
+            className: "is-bach",
+            message: "Corelli, La Folia. Бас всё помнит.",
+            play: () => playSimpleNamedMelody(
+                ["D3","A3","D3","C3","F3","C3","D3","A2","D3","A3","D3","C3","F3","C3","D3","A2"],
+                0.28,
+                0.22,
+                "sine",
+                0.05
+            )
+        },
+
+        purcell: {
+            aliases: ["PURCELL","ПЕРСЕЛЛ","ПЁРСЕЛЛ"],
+            month: 8,
+            day: 10,
+            label: "HP",
+            title: "10 сентября — традиционно указываемая дата рождения Генри Пёрселла",
+            className: "is-tchaikovsky",
+            message: "Dido’s Lament. Ground bass медленно опускается вниз.",
+            play: () => playSimpleNamedMelody(
+                ["G3","F#3","F3","E3","Eb3","D3","C#3","D3","G3","F#3","F3","E3","Eb3","D3","C#3","D3"],
+                0.3,
+                0.25,
+                "sine",
+                0.052
+            )
+        },
+
+        scarlatti: {
+            aliases: ["SCARLATTI","СКАРЛАТТИ"],
+            month: 9,
+            day: 26,
+            label: "DS",
+            title: "26 октября — день рождения Доменико Скарлатти",
+            className: "is-mission",
+            message: "K.141. Клавесин уже превратился в ударный инструмент.",
+            play: () => playSimpleNamedMelody(
+                ["D5","D5","D5","D5","D5","D5","D5","D5","C#5","D5","E5","F5","E5","D5","C#5","D5"],
+                0.095,
+                0.075,
+                "square",
+                0.027
+            )
+        },
+
+        haydn: {
+            aliases: ["HAYDN","ГАЙДН"],
+            month: 2,
+            day: 31,
+            label: "JH",
+            title: "31 марта — день рождения Йозефа Гайдна",
+            className: "is-bach",
+            message: "Симфония №45 «Прощальная». Пора по одному гасить свечи.",
+            play: () => playSimpleNamedMelody(
+                ["G4","E4","C4","B3","G3","D4","C4","B3","G3","D4","C4","G3","E3","C3"],
+                0.27,
+                0.22,
+                "triangle",
+                0.046
+            )
+        },
+
+        schubert: {
+            aliases: ["SCHUBERT","ШУБЕРТ"],
+            month: 0,
+            day: 31,
+            label: "FS",
+            title: "31 января — день рождения Франца Шуберта",
+            className: "is-tchaikovsky",
+            message: "Неоконченная симфония. Пасхалку, впрочем, мы закончили.",
+            play: () => playSimpleNamedMelody(
+                ["A4","B4","C5","A4","G4","E4","F4","C4","B3","E4","A4","B4","C5","A4"],
+                0.25,
+                0.2,
+                "sine",
+                0.05
+            )
+        },
+
+        mendelssohn: {
+            aliases: ["MENDELSSOHN","MENDELSON","МЕНДЕЛЬСОН"],
+            month: 1,
+            day: 3,
+            label: "FM",
+            title: "3 февраля — день рождения Феликса Мендельсона",
+            className: "is-tchaikovsky",
+            message: "Скрипичный концерт ми минор. Солист вступает почти сразу.",
+            play: () => playSimpleNamedMelody(
+                ["B4","B4","B4","G4","E5","E5","B5","G5","F#5","E5","C5","E5","B4"],
+                0.24,
+                0.2,
+                "triangle",
+                0.05
+            )
+        },
+
+        chopin: {
+            aliases: ["CHOPIN","ШОПЕН"],
+            month: 2,
+            day: 1,
+            label: "FC",
+            title: "1 марта — традиционно отмечаемый день рождения Фридерика Шопена",
+            className: "is-tchaikovsky",
+            message: "Траурный марш. Просьба не превращать календарь в катафалк.",
+            play: () => playSimpleNamedMelody(
+                ["Bb3","Bb3","Bb3","Bb3","Db4","C4","C4","Bb3","Bb3","Bb3","Bb3","Ab3","Bb3"],
+                0.31,
+                0.24,
+                "sine",
+                0.052
+            )
+        },
+
+        liszt: {
+            aliases: ["LISZT","ЛИСТ"],
+            month: 9,
+            day: 22,
+            label: "FL",
+            title: "22 октября — день рождения Ференца Листа",
+            className: "is-mission",
+            message: "Венгерская рапсодия №2. Пальцы уже пожалели о решении.",
+            play: () => playSimpleNamedMelody(
+                ["G4","B4","E5","D5","C5","B4","Bb4","A4","Ab4","G4","F#4","G4","A4","B4"],
+                0.14,
+                0.11,
+                "triangle",
+                0.044
+            )
+        },
+
+        brahms: {
+            aliases: ["BRAHMS","БРАМС"],
+            month: 4,
+            day: 7,
+            label: "JB",
+            title: "7 мая — день рождения Иоганнеса Брамса",
+            className: "is-beethoven",
+            message: "Венгерский танец №5. Темп опять решил пожить своей жизнью.",
+            play: () => playSimpleNamedMelody(
+                ["E4","A4","C5","A4","Ab4","A4","B4","A4","F4","G4","A4","E4","E4","A4","C5","B4"],
+                0.2,
+                0.16,
+                "triangle",
+                0.048
+            )
+        },
+
+        dvorak: {
+            aliases: ["DVORAK","DVOŘÁK","ДВОРЖАК"],
+            month: 8,
+            day: 8,
+            label: "AD",
+            title: "8 сентября — день рождения Антонина Дворжака",
+            className: "is-beethoven",
+            message: "«Из Нового Света», финал. Медь уже всё поняла.",
+            play: () => playSimpleNamedMelody(
+                ["E4","F#4","G4","F#4","E4","E4","E4","D4","B3","D4","E4","F#4","G4","A4"],
+                0.25,
+                0.2,
+                "sawtooth",
+                0.03
+            )
+        },
+
+        mahler: {
+            aliases: ["MAHLER","МАЛЕР"],
+            month: 6,
+            day: 7,
+            label: "GM",
+            title: "7 июля — день рождения Густава Малера",
+            className: "is-beethoven",
+            message: "Симфония №5. Труба объявила: шутки закончились.",
+            play: () => playSimpleNamedMelody(
+                ["C#5","C#5","C#5","C#5","B4","C#5","D5","C#5","B4","A4","G#4","C#5"],
+                0.26,
+                0.18,
+                "sawtooth",
+                0.032
+            )
+        },
+
+        sibelius: {
+            aliases: ["SIBELIUS","СИБЕЛИУС"],
+            month: 11,
+            day: 8,
+            label: "JS",
+            title: "8 декабря — день рождения Яна Сибелиуса",
+            className: "is-tchaikovsky",
+            message: "Скрипичный концерт. Туман, тремоло — и солист остаётся один.",
+            play: () => playSimpleNamedMelody(
+                ["G4","A4","D5","C5","Bb4","A4","G4","F4","E4","D4","E4","F4"],
+                0.28,
+                0.23,
+                "sine",
+                0.05
+            )
+        },
+
+        debussy: {
+            aliases: ["DEBUSSY","ДЕБЮССИ"],
+            month: 7,
+            day: 22,
+            label: "CD",
+            title: "22 августа — день рождения Клода Дебюсси",
+            className: "is-tchaikovsky",
+            message: "Clair de lune. Календарь временно освещён луной.",
+            play: () => playSimpleNamedMelody(
+                ["G4","G4","E4","D4","E4","D4","C4","D4","C4","E4","C4","G3","A3","C4"],
+                0.31,
+                0.27,
+                "sine",
+                0.048
+            )
+        },
+
+        ravel: {
+            aliases: ["RAVEL","РАВЕЛЬ"],
+            month: 2,
+            day: 7,
+            label: "MR",
+            title: "7 марта — день рождения Мориса Равеля",
+            className: "is-mission",
+            message: "Boléro. Осторожно: дальше будет только громче.",
+            play: () => playSimpleNamedMelody(
+                ["C5","B4","C5","D5","C5","B4","A4","C5","C5","A4","B4","C5","D5","C5"],
+                0.24,
+                0.19,
+                "triangle",
+                0.045
+            )
+        },
+
+        elgar: {
+            aliases: ["ELGAR","ЭЛГАР"],
+            month: 5,
+            day: 2,
+            label: "EE",
+            title: "2 июня — день рождения Эдварда Элгара",
+            className: "is-tchaikovsky",
+            message: "Nimrod. На несколько секунд всё стало очень серьёзно.",
+            play: () => playSimpleNamedMelody(
+                ["G4","Eb4","Ab4","F4","Bb4","F4","F4","Ab4","G4","Bb4","Eb4","F4","G4","Ab4"],
+                0.32,
+                0.28,
+                "sine",
+                0.052
+            )
+        },
+
+        holst: {
+            aliases: ["HOLST","ХОЛСТ"],
+            month: 8,
+            day: 21,
+            label: "GH",
+            title: "21 сентября — день рождения Густава Холста",
+            className: "is-mission",
+            message: "Mars. Пять четвертей снова пришли без приглашения.",
+            play: () => playSimpleNamedMelody(
+                ["G3","D4","C#4","Ab3","G3","G3","D4","C#4","Ab3","G3"],
+                0.3,
+                0.2,
+                "sawtooth",
+                0.03
+            )
+        },
+
+        verdi: {
+            aliases: ["VERDI","ВЕРДИ"],
+            month: 9,
+            day: 10,
+            label: "GV",
+            title: "10 октября — день рождения Джузеппе Верди",
+            className: "is-beethoven",
+            message: "Dies irae. Очень убедительная причина прийти на репетицию вовремя.",
+            play: () => playSimpleNamedMelody(
+                ["D4","D4","D4","D4","C#4","D4","F4","E4","D4","C4","Bb3","A3","D4","D4"],
+                0.2,
+                0.15,
+                "sawtooth",
+                0.034
+            )
+        },
+
+        rossini: {
+            aliases: ["ROSSINI","РОССИНИ"],
+            month: 1,
+            day: 29,
+            label: "GR",
+            title: "29 февраля — день рождения Джоаккино Россини",
+            className: "is-mission",
+            message: "Вильгельм Телль. Да, сейчас кто-нибудь обязательно поскачет.",
+            play: () => playSimpleNamedMelody(
+                ["G4","G4","G4","G4","G4","G4","G4","G4","C5","D5","E5","C5","G4","C5"],
+                0.145,
+                0.11,
+                "triangle",
+                0.045
+            )
+        },
+
+        puccini: {
+            aliases: ["PUCCINI","ПУЧЧИНИ"],
+            month: 11,
+            day: 22,
+            label: "GP",
+            title: "22 декабря — день рождения Джакомо Пуччини",
+            className: "is-tchaikovsky",
+            message: "Nessun dorma. Но после генеральной — пожалуйста.",
+            play: () => playSimpleNamedMelody(
+                ["D4","E4","F#4","E4","D4","E4","C#4","B3","E4","F#4","G4","A4","G4","F#4"],
+                0.29,
+                0.24,
+                "sine",
+                0.052
+            )
+        },
+
+        paganini: {
+            aliases: ["PAGANINI","ПАГАНИНИ"],
+            month: 9,
+            day: 27,
+            label: "NP",
+            title: "27 октября — день рождения Никколо Паганини",
+            className: "is-mission",
+            message: "Каприс №24. Левая рука уже требует профсоюз.",
+            play: () => playSimpleNamedMelody(
+                ["A4","A4","A4","B4","A4","C5","E5","E5","G#5","F#5","E5","A5"],
+                0.19,
+                0.14,
+                "triangle",
+                0.047
+            )
+        },
+
+        sarasate: {
+            aliases: ["SARASATE","САРАСАТЕ"],
+            month: 2,
+            day: 10,
+            label: "PS",
+            title: "10 марта — день рождения Пабло Сарасате",
+            className: "is-tchaikovsky",
+            message: "Zigeunerweisen. Смычок начинает подозревать неладное.",
+            play: () => playSimpleNamedMelody(
+                ["G4","C5","Eb5","G5","F5","Eb5","D5","C5","B4","C5","Eb5","D5","C5"],
+                0.28,
+                0.22,
+                "triangle",
+                0.05
+            )
+        },
+
+        dukas: {
+            aliases: ["DUKAS","ДЮКА"],
+            month: 9,
+            day: 1,
+            label: "PD",
+            title: "1 октября — день рождения Поля Дюка",
+            className: "is-mission",
+            message: "«Ученик чародея». Швабры пока не ожили.",
+            play: () => playSimpleNamedMelody(
+                ["A4","E5","E5","F#5","Ab5","A5","C6","A5","C6","B5","G#5","A5"],
+                0.22,
+                0.17,
+                "triangle",
+                0.046
+            )
+        },
+
+        faure: {
+            aliases: ["FAURE","FAURÉ","ФОРЕ"],
+            month: 4,
+            day: 12,
+            label: "GF",
+            title: "12 мая — день рождения Габриэля Форе",
+            className: "is-tchaikovsky",
+            message: "Pavane. Репетиция внезапно научилась ходить очень изящно.",
+            play: () => playSimpleNamedMelody(
+                ["C#5","B4","A4","G#4","A4","B4","C#5","E5","D5","C#5","B4","A4","G#4","A4"],
+                0.3,
+                0.25,
+                "sine",
+                0.05
+            )
+        },
+
+        monteverdi: {
+            aliases: ["MONTEVERDI","МОНТЕВЕРДИ"],
+            month: 4,
+            day: 15,
+            label: "CM",
+            title: "15 мая — день рождения Клаудио Монтеверди",
+            className: "is-beethoven",
+            message: "L’Orfeo: Toccata. Трубы объявляют открытие календаря.",
+            play: () => playSimpleNamedMelody(
+                ["C4","G4","C5","G4","C5","E5","D5","C5","G4","C5","E5","G5"],
+                0.21,
+                0.16,
+                "sawtooth",
+                0.031
+            )
+        },
+
+        pachelbel: {
+            aliases: ["PACHELBEL","ПАХЕЛЬБЕЛЬ"],
+            label: "JP",
+            title: "Иоганн Пахельбель — точная дата рождения не установлена",
+            className: "is-bach",
+            message: "Canon in D. Басовая формула снова пошла по кругу.",
+            play: () => playSimpleNamedMelody(
+                ["D3","A3","B3","F#3","G3","D3","G3","A3","D3","A3","B3","F#3","G3","D3","G3","A3"],
+                0.27,
+                0.22,
+                "sine",
+                0.048
+            )
+        },
+
+        boccherini: {
+            aliases: ["BOCCHERINI","БОККЕРИНИ"],
+            month: 1,
+            day: 19,
+            label: "LB",
+            title: "19 февраля — день рождения Луиджи Боккерини",
+            className: "is-bach",
+            message: "Менуэт Боккерини. Реверанс календарю.",
+            play: () => playSimpleNamedMelody(
+                ["C5","B4","C5","D5","C5","C5","E5","G5","G5","F5","F5","E5","D5","C5"],
+                0.24,
+                0.2,
+                "triangle",
+                0.047
+            )
+        },
+
+        smetana: {
+            aliases: ["SMETANA","СМЕТАНА"],
+            month: 2,
+            day: 2,
+            label: "BS",
+            title: "2 марта — день рождения Бедржиха Сметаны",
+            className: "is-tchaikovsky",
+            message: "Vltava. Река уже течёт через сетку календаря.",
+            play: () => playSimpleNamedMelody(
+                ["E4","F#4","G4","F#4","G4","A4","B4","E5","F#5","G5","F#5","G5","A5","B5"],
+                0.23,
+                0.19,
+                "sine",
+                0.05
+            )
+        },
+
+        bruch: {
+            aliases: ["BRUCH","БРУХ"],
+            month: 0,
+            day: 6,
+            label: "MB",
+            title: "6 января — день рождения Макса Бруха",
+            className: "is-tchaikovsky",
+            message: "Скрипичный концерт №1. Теперь скрипачи официально дома.",
+            play: () => playSimpleNamedMelody(
+                ["E5","D5","C5","E5","D5","C5","E5","A5","C6","E6","D6","C6","B5","A5"],
+                0.27,
+                0.22,
+                "triangle",
+                0.05
+            )
+        },
+
+        glazunov: {
+            aliases: ["GLAZUNOV","ГЛАЗУНОВ"],
+            month: 7,
+            day: 10,
+            label: "AG",
+            title: "10 августа — день рождения Александра Глазунова",
+            className: "is-tchaikovsky",
+            message: "Скрипичный концерт ля минор. Романтизм ещё не ушёл домой.",
+            play: () => playSimpleNamedMelody(
+                ["A4","B4","C5","B4","A4","G#4","A4","C5","B4","Bb4","A4","G4","F#4","E4"],
+                0.28,
+                0.23,
+                "triangle",
+                0.05
+            )
         }
 
     };
+
+
+    const EASTER_PROGRESS_KEY =
+        'hse-orchestra-musical-easter-eggs-v1';
+
+
+    function loadFoundMusicalEggs() {
+
+        try {
+
+            const raw =
+                window.localStorage
+                    .getItem(
+                        EASTER_PROGRESS_KEY
+                    );
+
+
+            const values =
+                raw
+                    ? JSON.parse(
+                        raw
+                    )
+                    : [];
+
+
+            return new Set(
+                Array.isArray(
+                    values
+                )
+
+                    ? values.filter(
+                        key =>
+                            Boolean(
+                                MUSICAL_EASTER_EGGS[
+                                    key
+                                ]
+                            )
+                    )
+
+                    : []
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            return new Set();
+
+        }
+
+    }
+
+
+    const foundMusicalEggs =
+        loadFoundMusicalEggs();
+
+
+    function saveFoundMusicalEggs() {
+
+        try {
+
+            window.localStorage
+                .setItem(
+                    EASTER_PROGRESS_KEY,
+                    JSON.stringify(
+                        [
+                            ...foundMusicalEggs
+                        ]
+                    )
+                );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            /*
+             * Даже если localStorage недоступен,
+             * текущая сессия продолжает считать находки.
+             */
+
+        }
+
+    }
+
+
+    function rememberMusicalEgg(
+        key
+    ) {
+
+        if (
+            !MUSICAL_EASTER_EGGS[
+                key
+            ]
+            ||
+            foundMusicalEggs.has(
+                key
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        foundMusicalEggs.add(
+            key
+        );
+
+
+        saveFoundMusicalEggs();
+
+    }
+
+
+    function showEasterProgress() {
+
+        const total =
+            Object.keys(
+                MUSICAL_EASTER_EGGS
+            )
+            .length;
+
+
+        const found =
+            [
+                ...foundMusicalEggs
+            ]
+            .filter(
+                key =>
+                    Boolean(
+                        MUSICAL_EASTER_EGGS[
+                            key
+                        ]
+                    )
+            )
+            .length;
+
+
+        const left =
+            Math.max(
+                0,
+                total - found
+            );
+
+
+        showToast(
+            found === total
+
+                ? 'Tutti! Найдено музыкальных пасхалок: ' +
+                  found +
+                  ' / ' +
+                  total +
+                  '.'
+
+                : 'Найдено музыкальных пасхалок: ' +
+                  found +
+                  ' / ' +
+                  total +
+                  '. Осталось: ' +
+                  left +
+                  '.'
+        );
+
+    }
 
 
     function triggerMusicalEgg(
@@ -1150,6 +1948,11 @@
             return;
 
         }
+
+
+        rememberMusicalEgg(
+            key
+        );
 
 
         activateMusicMode(
@@ -1472,7 +2275,32 @@
                         typedSecret +
                         event.key.toUpperCase()
                     )
-                    .slice(-24);
+                    .slice(-32);
+
+
+                if (
+                    typedSecret.endsWith(
+                        'EASTER'
+                    )
+                    ||
+                    typedSecret.endsWith(
+                        'ПАСХАЛКИ'
+                    )
+                ) {
+
+                    event.stopImmediatePropagation();
+
+
+                    showEasterProgress();
+
+
+                    typedSecret =
+                        '';
+
+
+                    return;
+
+                }
 
 
                 const typedEgg =
