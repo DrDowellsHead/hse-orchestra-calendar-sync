@@ -330,11 +330,10 @@
     }
 
 
-    function playToneSequence(
-        notes,
-        waveform = 'sine',
-        volume = 0.055
-    ) {
+    let musicAudioContext = null;
+
+
+    function getMusicAudioContext() {
 
         const AudioContextClass =
             window.AudioContext
@@ -346,13 +345,300 @@
             !AudioContextClass
         ) {
 
+            return null;
+
+        }
+
+
+        if (
+            !musicAudioContext
+            ||
+            musicAudioContext.state ===
+            'closed'
+        ) {
+
+            musicAudioContext =
+                new AudioContextClass();
+
+        }
+
+
+        return musicAudioContext;
+
+    }
+
+
+    function playToneSequence(
+        notes,
+        waveform = 'sine',
+        volume = 0.055
+    ) {
+
+        const context =
+            getMusicAudioContext();
+
+
+        if (
+            !context
+            ||
+            !Array.isArray(
+                notes
+            )
+            ||
+            !notes.length
+        ) {
+
             return;
 
         }
 
 
-        const context =
-            new AudioContextClass();
+        /*
+         * Раньше каждая пасхалка создавала новый AudioContext.
+         * На мобильных браузерах после нескольких запусков это
+         * может приводить к тихому звуку или полному молчанию.
+         * Теперь весь музыкальный слой использует один контекст.
+         */
+        const volumeFloor = {
+
+            sine: 0.050,
+            triangle: 0.047,
+            square: 0.040,
+            sawtooth: 0.038
+
+        };
+
+
+        const effectiveVolume =
+            Math.min(
+                0.075,
+                Math.max(
+                    Number(
+                        volume
+                    )
+                    ||
+                    0.045,
+                    volumeFloor[
+                        waveform
+                    ]
+                    ||
+                    0.045
+                )
+            );
+
+
+        const schedule =
+            () => {
+
+                const baseTime =
+                    context.currentTime +
+                    0.025;
+
+
+                notes.forEach(
+                    ([frequency, delay, duration]) => {
+
+                        const safeFrequency =
+                            Number(
+                                frequency
+                            );
+
+
+                        const safeDelay =
+                            Math.max(
+                                0,
+                                Number(
+                                    delay
+                                )
+                                ||
+                                0
+                            );
+
+
+                        const safeDuration =
+                            Math.max(
+                                0.055,
+                                Number(
+                                    duration
+                                )
+                                ||
+                                0.12
+                            );
+
+
+                        if (
+                            !Number.isFinite(
+                                safeFrequency
+                            )
+                            ||
+                            safeFrequency <= 0
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const start =
+                            baseTime +
+                            safeDelay;
+
+
+                        const stop =
+                            start +
+                            safeDuration;
+
+
+                        const oscillator =
+                            context.createOscillator();
+
+
+                        const gain =
+                            context.createGain();
+
+
+                        oscillator.type =
+                            waveform;
+
+
+                        oscillator.frequency
+                            .setValueAtTime(
+                                safeFrequency,
+                                start
+                            );
+
+
+                        gain.gain
+                            .setValueAtTime(
+                                0.0001,
+                                start
+                            );
+
+
+                        gain.gain
+                            .exponentialRampToValueAtTime(
+                                effectiveVolume,
+                                start +
+                                Math.min(
+                                    0.014,
+                                    safeDuration *
+                                    0.3
+                                )
+                            );
+
+
+                        gain.gain
+                            .exponentialRampToValueAtTime(
+                                0.0001,
+                                stop
+                            );
+
+
+                        oscillator.connect(
+                            gain
+                        );
+
+
+                        gain.connect(
+                            context.destination
+                        );
+
+
+                        oscillator.start(
+                            start
+                        );
+
+
+                        oscillator.stop(
+                            stop +
+                            0.03
+                        );
+
+
+                        /*
+                         * Телефонные динамики почти не воспроизводят
+                         * фундамент ниже ~120 Гц. Для таких нот тихо
+                         * добавляем октаву сверху. Сам мотив и высота
+                         * основного голоса при этом сохраняются.
+                         */
+                        if (
+                            safeFrequency <
+                            120
+                        ) {
+
+                            const helperOscillator =
+                                context.createOscillator();
+
+
+                            const helperGain =
+                                context.createGain();
+
+
+                            helperOscillator.type =
+                                waveform;
+
+
+                            helperOscillator.frequency
+                                .setValueAtTime(
+                                    safeFrequency *
+                                    2,
+                                    start
+                                );
+
+
+                            helperGain.gain
+                                .setValueAtTime(
+                                    0.0001,
+                                    start
+                                );
+
+
+                            helperGain.gain
+                                .exponentialRampToValueAtTime(
+                                    effectiveVolume *
+                                    0.32,
+                                    start +
+                                    Math.min(
+                                        0.014,
+                                        safeDuration *
+                                        0.3
+                                    )
+                                );
+
+
+                            helperGain.gain
+                                .exponentialRampToValueAtTime(
+                                    0.0001,
+                                    stop
+                                );
+
+
+                            helperOscillator.connect(
+                                helperGain
+                            );
+
+
+                            helperGain.connect(
+                                context.destination
+                            );
+
+
+                            helperOscillator.start(
+                                start
+                            );
+
+
+                            helperOscillator.stop(
+                                stop +
+                                0.03
+                            );
+
+                        }
+
+                    }
+                );
+
+            };
 
 
         if (
@@ -360,87 +646,23 @@
             'suspended'
         ) {
 
-            context.resume();
+            context.resume()
+                .then(
+                    schedule
+                )
+                .catch(
+                    () => {}
+                );
 
         }
 
+        else {
 
-        notes.forEach(
-            ([frequency, delay, duration]) => {
+            schedule();
 
-                const oscillator =
-                    context.createOscillator();
-
-
-                const gain =
-                    context.createGain();
-
-
-                oscillator.type =
-                    waveform;
-
-
-                oscillator.frequency.value =
-                    frequency;
-
-
-                gain.gain.setValueAtTime(
-                    0.0001,
-                    context.currentTime + delay
-                );
-
-
-                gain.gain.exponentialRampToValueAtTime(
-                    volume,
-                    context.currentTime + delay + 0.014
-                );
-
-
-                gain.gain.exponentialRampToValueAtTime(
-                    0.0001,
-                    context.currentTime + delay + duration
-                );
-
-
-                oscillator.connect(
-                    gain
-                );
-
-
-                gain.connect(
-                    context.destination
-                );
-
-
-                oscillator.start(
-                    context.currentTime + delay
-                );
-
-
-                oscillator.stop(
-                    context.currentTime + delay + duration + 0.03
-                );
-
-            }
-        );
-
-
-        const end =
-            Math.max(
-                ...notes.map(
-                    note =>
-                        note[1] + note[2]
-                )
-            );
-
-
-        window.setTimeout(
-            () => context.close(),
-            (end + 0.25) * 1000
-        );
+        }
 
     }
-
 
     function clearMusicModes() {
 
