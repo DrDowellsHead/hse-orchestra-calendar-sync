@@ -3043,6 +3043,13 @@
                                 'orch-mobile-event';
 
 
+                            button.dataset.type =
+                                String(
+                                    event.type || ''
+                                )
+                                .toLowerCase();
+
+
                             const meta = [
 
                                 event.type,
