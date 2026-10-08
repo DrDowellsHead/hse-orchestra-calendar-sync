@@ -1432,3 +1432,56 @@
 .orch-mobile-event[data-type*="концерт"] .orch-mobile-event__meta {
     color: var(--orch-muted);
 }
+
+
+/* ==========================================
+   СТРЕЛКИ МЕСЯЦА — ОДИНАКОВЫЙ РАЗМЕР И ПОЗИЦИЯ
+   ========================================== */
+
+.orch-calendar__toolbar .orch-cal-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    min-width: 52px;
+    max-width: 52px;
+    height: 52px;
+    min-height: 52px;
+    max-height: 52px;
+    margin: 0;
+    padding: 0;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 50%;
+    line-height: 1;
+    vertical-align: middle;
+    appearance: none;
+    -webkit-appearance: none;
+    transform: none;
+}
+
+.orch-calendar__toolbar .orch-cal-btn:hover,
+.orch-calendar__toolbar .orch-cal-btn:focus,
+.orch-calendar__toolbar .orch-cal-btn:active {
+    transform: none;
+}
+
+.orch-calendar__toolbar {
+    grid-template-columns: 52px minmax(0, 1fr) 52px;
+}
+
+@media (max-width: 760px) {
+    .orch-calendar__toolbar .orch-cal-btn {
+        width: 44px;
+        min-width: 44px;
+        max-width: 44px;
+        height: 44px;
+        min-height: 44px;
+        max-height: 44px;
+    }
+
+    .orch-calendar__toolbar {
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+    }
+}
