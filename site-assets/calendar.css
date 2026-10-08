@@ -1404,31 +1404,31 @@
 }
 
 /* ==========================================
-   КОНЦЕРТЫ — КРАСНЫЙ АКЦЕНТ
+   КОНЦЕРТЫ — СПОКОЙНАЯ ЗАЛИВКА + ЯРКИЙ АКЦЕНТ
    ========================================== */
 
 .orch-event-pill[data-type*="концерт"] {
-    background: #b8444a;
-    color: #ffffff;
+    background: rgba(53, 85, 116, 0.12);
+    color: var(--orch-ink);
 }
 
 .orch-event-pill[data-type*="концерт"]::before {
-    background: #efb83c;
+    background: #c94d43;
 }
 
 .orch-event-pill[data-type*="концерт"]:hover {
-    background: #9f363c;
+    background: rgba(53, 85, 116, 0.19);
 }
 
 .orch-mobile-event[data-type*="концерт"] {
-    background: #b8444a;
-    color: #ffffff;
+    background: rgba(53, 85, 116, 0.12);
+    color: var(--orch-ink);
 }
 
 .orch-mobile-event[data-type*="концерт"]::before {
-    background: #efb83c;
+    background: #c94d43;
 }
 
 .orch-mobile-event[data-type*="концерт"] .orch-mobile-event__meta {
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--orch-muted);
 }
