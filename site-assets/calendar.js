@@ -4460,6 +4460,178 @@
     }
 
 
+    function calendarDownloadEvents(
+        key = selectedCalendarKey
+    ) {
+
+        const matches =
+            event => {
+
+                const type =
+                    normalized(
+                        event.type
+                    );
+
+
+                if (
+                    key === 'rehearsals'
+                ) {
+
+                    return type.includes(
+                        'репет'
+                    );
+
+                }
+
+
+                if (
+                    key === 'concerts'
+                ) {
+
+                    return type.includes(
+                        'конц'
+                    );
+
+                }
+
+
+                if (
+                    key === 'meetings'
+                ) {
+
+                    return type.includes(
+                        'собран'
+                    );
+
+                }
+
+
+                if (
+                    key === 'other'
+                ) {
+
+                    return (
+                        !type.includes('репет')
+                        &&
+                        !type.includes('конц')
+                        &&
+                        !type.includes('собран')
+                    );
+
+                }
+
+
+                return true;
+
+            };
+
+
+        return state.events
+            .filter(
+                matches
+            );
+
+    }
+
+
+    function downloadSelectedCalendar() {
+
+        const events =
+            calendarDownloadEvents();
+
+
+        if (
+            !events.length
+        ) {
+
+            showToast(
+                'В выбранном разделе пока нет событий.'
+            );
+
+
+            return;
+
+        }
+
+
+        const names = {
+            all: 'all',
+            rehearsals: 'rehearsals',
+            concerts: 'concerts',
+            meetings: 'meetings',
+            other: 'other'
+        };
+
+
+        downloadIcs(
+            events,
+            'HSE-Orchestra-' +
+            (
+                names[
+                    selectedCalendarKey
+                ]
+                ||
+                'calendar'
+            ) +
+            '.ics'
+        );
+
+
+        showToast(
+            'Календарь скачан как .ics.'
+        );
+
+    }
+
+
+    function ensureCalendarDownloadButton() {
+
+        const actions =
+            $(
+                '.orch-subscribe-modal__actions'
+            );
+
+
+        if (
+            !actions
+            ||
+            $('#orch-subscribe-download')
+        ) {
+
+            return;
+
+        }
+
+
+        const button =
+            document.createElement(
+                'button'
+            );
+
+
+        button.type =
+            'button';
+
+
+        button.className =
+            'orch-subscribe-action';
+
+
+        button.id =
+            'orch-subscribe-download';
+
+
+        button.textContent =
+            'Скачать .ics';
+
+
+        actions.appendChild(
+            button
+        );
+
+    }
+
+
     function openAppleSubscription() {
 
         const httpsUrl =
@@ -4900,6 +5072,18 @@
                             button.dataset.calendarKey
                         )
                 )
+        );
+
+
+        ensureCalendarDownloadButton();
+
+
+        $(
+            '#orch-subscribe-download'
+        )
+        ?.addEventListener(
+            'click',
+            downloadSelectedCalendar
         );
 
 
