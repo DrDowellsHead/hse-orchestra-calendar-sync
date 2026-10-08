@@ -220,115 +220,23 @@
 
     function playBeethovenMotif() {
 
-        const AudioContextClass =
-            window.AudioContext
-            ||
-            window.webkitAudioContext;
+        playToneSequence(
+            [
+                [392.00, 0.00, 0.13],
+                [392.00, 0.17, 0.13],
+                [392.00, 0.34, 0.13],
+                [311.13, 0.51, 0.55],
 
-
-        if (
-            !AudioContextClass
-        ) {
-
-            return;
-
-        }
-
-
-        const context =
-            new AudioContextClass();
-
-
-        if (
-            context.state ===
-            'suspended'
-        ) {
-
-            context.resume();
-
-        }
-
-
-        const notes = [
-            [392.00, 0.00, 0.13],
-            [392.00, 0.17, 0.13],
-            [392.00, 0.34, 0.13],
-            [311.13, 0.51, 0.55],
-
-            [349.23, 1.18, 0.13],
-            [349.23, 1.35, 0.13],
-            [349.23, 1.52, 0.13],
-            [293.66, 1.69, 0.66]
-        ];
-
-
-        notes.forEach(
-            ([frequency, delay, duration]) => {
-
-                const oscillator =
-                    context.createOscillator();
-
-
-                const gain =
-                    context.createGain();
-
-
-                oscillator.type =
-                    'triangle';
-
-
-                oscillator.frequency.value =
-                    frequency;
-
-
-                gain.gain.setValueAtTime(
-                    0.0001,
-                    context.currentTime + delay
-                );
-
-
-                gain.gain.exponentialRampToValueAtTime(
-                    0.08,
-                    context.currentTime + delay + 0.018
-                );
-
-
-                gain.gain.exponentialRampToValueAtTime(
-                    0.0001,
-                    context.currentTime + delay + duration
-                );
-
-
-                oscillator.connect(
-                    gain
-                );
-
-
-                gain.connect(
-                    context.destination
-                );
-
-
-                oscillator.start(
-                    context.currentTime + delay
-                );
-
-
-                oscillator.stop(
-                    context.currentTime + delay + duration + 0.03
-                );
-
-            }
-        );
-
-
-        window.setTimeout(
-            () => context.close(),
-            2700
+                [349.23, 1.18, 0.13],
+                [349.23, 1.35, 0.13],
+                [349.23, 1.52, 0.13],
+                [293.66, 1.69, 0.66]
+            ],
+            'triangle',
+            0.058
         );
 
     }
-
 
     let musicAudioContext = null;
 
