@@ -104,8 +104,6 @@
 
     let noteClicks = 0;
 
-    let monthTravelClicks = 0;
-
     let keyboardHintShown = false;
 
 
@@ -2222,6 +2220,181 @@
     }
 
 
+    function showSpecialDateEasterEgg(
+        month,
+        day
+    ) {
+
+        if (
+            month === 9
+            &&
+            day === 19
+        ) {
+
+            showToast(
+                'Роняет лес багряный свой убор... А наш оркестр россыпь нот'
+            );
+
+
+            return true;
+
+        }
+
+
+        if (
+            month === 11
+            &&
+            day === 19
+        ) {
+
+            showToast(
+                'С Днём Рождения, Ришат!'
+            );
+
+
+            return true;
+
+        }
+
+
+        return false;
+
+    }
+
+
+    function ensureJeanModal() {
+
+        let modal =
+            $('#orch-jean-modal');
+
+
+        if (
+            modal
+        ) {
+
+            return modal;
+
+        }
+
+
+        modal =
+            document.createElement(
+                'div'
+            );
+
+
+        modal.id =
+            'orch-jean-modal';
+
+
+        modal.className =
+            'orch-jean-modal';
+
+
+        modal.hidden =
+            true;
+
+
+        modal.innerHTML =
+            '<div class="orch-jean-modal__backdrop" data-jean-close></div>' +
+            '<div class="orch-jean-modal__card" role="dialog" aria-modal="true" aria-label="Jean">' +
+                '<button type="button" class="orch-jean-modal__close" data-jean-close aria-label="Закрыть">×</button>' +
+                '<div class="orch-jean-modal__terminal">' +
+                    '<span>jean_valjean@Jean-Valjean-Ubuntu:~$ whoami</span>' +
+                    '<strong>Jean Valjean</strong>' +
+                    '<small>HSE Orchestra · скрипка / код / оркестровый хаос</small>' +
+                '</div>' +
+                '<img class="orch-jean-modal__photo" ' +
+                     'src="' +
+                     CALENDAR_SYNC_BASE +
+                     'assets/jean/jean-conductor.jpg" ' +
+                     'alt="Скрытая фотография из пасхалки Jean">' +
+                '<div class="orch-jean-modal__quote" id="orch-jean-quote"></div>' +
+            '</div>';
+
+
+        modal
+            .querySelectorAll(
+                '[data-jean-close]'
+            )
+            .forEach(
+                node =>
+                    node.addEventListener(
+                        'click',
+                        () => {
+
+                            modal.hidden =
+                                true;
+
+
+                            document.body.style.overflow =
+                                '';
+
+                        }
+                    )
+            );
+
+
+        document.body
+            .appendChild(
+                modal
+            );
+
+
+        return modal;
+
+    }
+
+
+    function showJeanEasterEgg() {
+
+        const modal =
+            ensureJeanModal();
+
+
+        const quotes = [
+            'Пюпитры сами себя не принесут.',
+            'Создатель календаря обнаружен. Не пугайте его — он опять что-то автоматизирует.',
+            'Jean был здесь. Потом ушёл разбираться, почему не пришли вторые скрипки.',
+            'Сначала скрипка. Потом код. Потом почему-то снова код.',
+            'Если всё работает — это пасхалка. Если нет — это репетиция.',
+            '24601'
+        ];
+
+
+        const quote =
+            quotes[
+                Math.floor(
+                    Math.random() *
+                    quotes.length
+                )
+            ];
+
+
+        const quoteNode =
+            $('#orch-jean-quote', modal);
+
+
+        if (
+            quoteNode
+        ) {
+
+            quoteNode.textContent =
+                quote;
+
+        }
+
+
+        modal.hidden =
+            false;
+
+
+        document.body.style.overflow =
+            'hidden';
+
+    }
+
+
     function enableBeethovenMode() {
         triggerMusicalEgg('beethoven');
     }
@@ -2376,7 +2549,7 @@
         );
 
 
-        $$('[data-orch-action="prev"], [data-orch-action="next"]')
+        $('[data-orch-action="prev"], [data-orch-action="next"]')
         .forEach(
             button => {
 
@@ -2384,17 +2557,15 @@
                     'click',
                     () => {
 
-                        monthTravelClicks++;
-
-
+                        /*
+                         * «Весна» Вивальди звучит только тогда,
+                         * когда стрелкой действительно пришли в март.
+                         */
                         if (
-                            monthTravelClicks === 4
+                            state.month === 2
                         ) {
 
                             enableVivaldiMode();
-
-
-                            monthTravelClicks = 0;
 
                         }
 
@@ -2480,6 +2651,31 @@
 
                 if (
                     typedSecret.endsWith(
+                        'JEAN'
+                    )
+                    ||
+                    typedSecret.endsWith(
+                        'ЖАН'
+                    )
+                ) {
+
+                    event.stopImmediatePropagation();
+
+
+                    showJeanEasterEgg();
+
+
+                    typedSecret =
+                        '';
+
+
+                    return;
+
+                }
+
+
+                if (
+                    typedSecret.endsWith(
                         'EASTER'
                     )
                     ||
@@ -2535,6 +2731,29 @@
 
             },
             true
+        );
+
+
+        document.addEventListener(
+            'keydown',
+            event => {
+
+                if (
+                    event.key === 'Escape'
+                    &&
+                    !$('#orch-jean-modal')?.hidden
+                ) {
+
+                    $('#orch-jean-modal').hidden =
+                        true;
+
+
+                    document.body.style.overflow =
+                        '';
+
+                }
+
+            }
         );
 
     }
@@ -4506,7 +4725,42 @@
                 '<div class="orch-day__events"></div>';
 
 
-            $$(
+            const dayNumberElement =
+                $(
+                    '.orch-day__num',
+                    cellElement
+                );
+
+
+            if (
+                !outside
+                &&
+                dayNumberElement
+            ) {
+
+                dayNumberElement
+                    .addEventListener(
+                        'click',
+                        event => {
+
+                            if (
+                                showSpecialDateEasterEgg(
+                                    month,
+                                    day
+                                )
+                            ) {
+
+                                event.stopPropagation();
+
+                            }
+
+                        }
+                    );
+
+            }
+
+
+            $(
                 '.orch-day__secret',
                 cellElement
             )
