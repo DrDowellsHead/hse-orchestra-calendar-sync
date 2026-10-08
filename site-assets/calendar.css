@@ -1402,3 +1402,33 @@
         border-radius: 16px;
     }
 }
+
+/* ==========================================
+   КОНЦЕРТЫ — КРАСНЫЙ АКЦЕНТ
+   ========================================== */
+
+.orch-event-pill[data-type*="концерт"] {
+    background: #b8444a;
+    color: #ffffff;
+}
+
+.orch-event-pill[data-type*="концерт"]::before {
+    background: #efb83c;
+}
+
+.orch-event-pill[data-type*="концерт"]:hover {
+    background: #9f363c;
+}
+
+.orch-mobile-event[data-type*="концерт"] {
+    background: #b8444a;
+    color: #ffffff;
+}
+
+.orch-mobile-event[data-type*="концерт"]::before {
+    background: #efb83c;
+}
+
+.orch-mobile-event[data-type*="концерт"] .orch-mobile-event__meta {
+    color: rgba(255, 255, 255, 0.78);
+}
