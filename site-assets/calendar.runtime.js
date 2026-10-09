@@ -172,6 +172,38 @@
     }
 
 
+    function specialDateEasterEggMessage(
+        month,
+        day
+    ) {
+
+        if (
+            month === 9
+            &&
+            day === 19
+        ) {
+
+            return 'Роняет лес багряный свой убор... А наш оркестр россыпь нот';
+
+        }
+
+
+        if (
+            month === 11
+            &&
+            day === 19
+        ) {
+
+            return 'С Днём Рождения, Ришат!';
+
+        }
+
+
+        return '';
+
+    }
+
+
     function showToast(
         message
     ) {
@@ -4505,7 +4537,51 @@
                 '<div class="orch-day__events"></div>';
 
 
-            $$(
+            const dayNumberElement =
+                $(
+                    '.orch-day__num',
+                    cellElement
+                );
+
+
+            if (
+                !outside
+                &&
+                dayNumberElement
+            ) {
+
+                const specialMessage =
+                    specialDateEasterEggMessage(
+                        month,
+                        day
+                    );
+
+
+                if (
+                    specialMessage
+                ) {
+
+                    dayNumberElement
+                        .addEventListener(
+                            'click',
+                            event => {
+
+                                event.stopPropagation();
+
+
+                                showToast(
+                                    specialMessage
+                                );
+
+                            }
+                        );
+
+                }
+
+            }
+
+
+            $(
                 '.orch-day__secret',
                 cellElement
             )
