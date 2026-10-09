@@ -4581,7 +4581,7 @@
             }
 
 
-            $(
+            $$(
                 '.orch-day__secret',
                 cellElement
             )
