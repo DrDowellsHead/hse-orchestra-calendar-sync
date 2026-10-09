@@ -1515,3 +1515,133 @@
         content: '';
     }
 }
+
+
+/* ==========================================
+   JEAN — ЛИЧНАЯ ПАСХАЛКА
+   ========================================== */
+
+.orch-jean-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.orch-jean-modal[hidden] {
+    display: none !important;
+}
+
+.orch-jean-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 17, 24, 0.76);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.orch-jean-modal__card {
+    position: relative;
+    z-index: 1;
+    width: min(620px, 100%);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 22px;
+    background: #111923;
+    color: #eef5fa;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+}
+
+.orch-jean-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 50%;
+    background: rgba(15, 23, 32, 0.72);
+    color: #ffffff;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.orch-jean-modal__terminal {
+    display: grid;
+    gap: 6px;
+    padding: 24px 58px 20px 24px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.orch-jean-modal__terminal span {
+    color: #87d6a0;
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.orch-jean-modal__terminal strong {
+    margin-top: 4px;
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 650;
+}
+
+.orch-jean-modal__terminal small {
+    color: #9aafbf;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.orch-jean-modal__photo {
+    display: block;
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    object-position: center 42%;
+    background: #0b1118;
+}
+
+.orch-jean-modal__quote {
+    padding: 20px 24px 24px;
+    color: #d9e5ec;
+    font-size: 16px;
+    line-height: 1.55;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .orch-jean-modal {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .orch-jean-modal__card {
+        border-radius: 20px;
+    }
+
+    .orch-jean-modal__terminal {
+        padding: 22px 50px 18px 18px;
+    }
+
+    .orch-jean-modal__terminal strong {
+        font-size: 21px;
+    }
+
+    .orch-jean-modal__photo {
+        max-height: 300px;
+    }
+
+    .orch-jean-modal__quote {
+        padding: 18px;
+        font-size: 15px;
+    }
+}

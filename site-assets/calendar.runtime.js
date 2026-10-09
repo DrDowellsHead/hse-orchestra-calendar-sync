@@ -2254,6 +2254,168 @@
     }
 
 
+    function ensureJeanModal() {
+
+        let modal =
+            document.getElementById(
+                'orch-jean-modal'
+            );
+
+
+        if (
+            modal
+        ) {
+
+            return modal;
+
+        }
+
+
+        modal =
+            document.createElement(
+                'div'
+            );
+
+
+        modal.id =
+            'orch-jean-modal';
+
+
+        modal.className =
+            'orch-jean-modal';
+
+
+        modal.hidden =
+            true;
+
+
+        modal.innerHTML =
+            '<div class="orch-jean-modal__backdrop" data-jean-close></div>' +
+            '<div class="orch-jean-modal__card" role="dialog" aria-modal="true" aria-label="Jean">' +
+                '<button type="button" class="orch-jean-modal__close" data-jean-close aria-label="Закрыть">×</button>' +
+                '<div class="orch-jean-modal__terminal">' +
+                    '<span>jean_valjean@Jean-Valjean-Ubuntu:~$ whoami</span>' +
+                    '<strong>Jean Valjean</strong>' +
+                    '<small>HSE Orchestra · скрипка / код / оркестровый хаос</small>' +
+                '</div>' +
+                '<img class="orch-jean-modal__photo" ' +
+                     'src="' +
+                     CALENDAR_SYNC_BASE +
+                     'assets/jean/jean-conductor.jpg" ' +
+                     'alt="Jean">' +
+                '<div class="orch-jean-modal__quote" id="orch-jean-quote"></div>' +
+            '</div>';
+
+
+        const closeJeanModal =
+            () => {
+
+                modal.hidden =
+                    true;
+
+
+                document.body.style.overflow =
+                    '';
+
+            };
+
+
+        modal
+            .querySelectorAll(
+                '[data-jean-close]'
+            )
+            .forEach(
+                node => {
+
+                    node.addEventListener(
+                        'click',
+                        closeJeanModal
+                    );
+
+                }
+            );
+
+
+        document.addEventListener(
+            'keydown',
+            event => {
+
+                if (
+                    event.key === 'Escape'
+                    &&
+                    !modal.hidden
+                ) {
+
+                    closeJeanModal();
+
+                }
+
+            }
+        );
+
+
+        document.body
+            .appendChild(
+                modal
+            );
+
+
+        return modal;
+
+    }
+
+
+    function showJeanEasterEgg() {
+
+        const modal =
+            ensureJeanModal();
+
+
+        const quotes = [
+            'Пюпитры сами себя не принесут.',
+            'Создатель календаря обнаружен. Не пугайте его — он опять что-то автоматизирует.',
+            'Jean был здесь. Потом ушёл разбираться, почему не пришли вторые скрипки.',
+            'Сначала скрипка. Потом код. Потом почему-то снова код.',
+            'Если всё работает — это пасхалка. Если нет — это репетиция.',
+            '24601'
+        ];
+
+
+        const quote =
+            quotes[
+                Math.floor(
+                    Math.random() *
+                    quotes.length
+                )
+            ];
+
+
+        const quoteNode =
+            modal.querySelector(
+                '#orch-jean-quote'
+            );
+
+
+        if (
+            quoteNode
+        ) {
+
+            quoteNode.textContent =
+                quote;
+
+        }
+
+
+        modal.hidden =
+            false;
+
+
+        document.body.style.overflow =
+            'hidden';
+
+    }
+
+
     function enableBeethovenMode() {
         triggerMusicalEgg('beethoven');
     }
@@ -2507,6 +2669,31 @@
                         event.key.toUpperCase()
                     )
                     .slice(-32);
+
+
+                if (
+                    typedSecret.endsWith(
+                        'JEAN'
+                    )
+                    ||
+                    typedSecret.endsWith(
+                        'ЖАН'
+                    )
+                ) {
+
+                    event.stopImmediatePropagation();
+
+
+                    showJeanEasterEgg();
+
+
+                    typedSecret =
+                        '';
+
+
+                    return;
+
+                }
 
 
                 if (
