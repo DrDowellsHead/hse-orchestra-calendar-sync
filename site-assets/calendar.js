@@ -104,6 +104,8 @@
 
     let noteClicks = 0;
 
+    let monthTravelClicks = 0;
+
     let keyboardHintShown = false;
 
 
@@ -1939,83 +1941,6 @@
     };
 
 
-    /*
-     * Ещё 51 композитор: вместе с исходными 49 это ровно
-     * 100 композиторов. Mission остаётся отдельной,
-     * некомпозиторской музыкальной пасхалкой.
-     */
-    const EXTRA_COMPOSER_EASTER_EGGS =
-        [["albinoni",["ALBINONI","АЛЬБИНОНИ"],5,8,"TA","8 июня — день рождения Томазо Альбинони","Adagio. Даже календарь внезапно замедлился.",["E5","D5","C5","B4","A4","A4","Ab4","F4","E4","D4","E4","F4"],0.3,0.25,"sine",0.052],["telemann",["TELEMANN","ТЕЛЕМАН"],2,14,"GPT","14 марта — день рождения Георга Филиппа Телемана","Концерт для альта соль мажор. Барокко знает, что делать с альтом.",["G4","B4","D5","G5","F#5","E5","D5","C5","B4","A4","G4","D5"],0.23,0.18,"triangle",0.049],["tartini",["TARTINI","ТАРТИНИ"],3,8,"GT","8 апреля — день рождения Джузеппе Тартини","«Дьявольская трель». Договор с дьяволом в комплект не входит.",["D5","A5","D6","C#6","D6","E6","F6","E6","D6","C#6","D6","A5"],0.18,0.14,"triangle",0.049],["locatelli",["LOCATELLI","ЛОКАТЕЛЛИ"],8,3,"PL","3 сентября — день рождения Пьетро Локателли","Il Labirinto Armonico. Выход из лабиринта — через пассаж.",["E5","F#5","G5","A5","B5","C6","D6","C6","B5","A5","G5","F#5","E5"],0.13,0.1,"triangle",0.048],["sammartini",["SAMMARTINI","САММАРТИНИ"],null,null,"GBS","Джованни Баттиста Саммартини — один из отцов ранней симфонии","Саммартини. Симфония ещё молодая, а проблемы с ансамблем уже знакомые.",["C4","G4","C5","E5","D5","C5","B4","A4","G4","C5","B4","A4"],0.24,0.19,"triangle",0.048],["pergolesi",["PERGOLESI","ПЕРГОЛЕЗИ"],0,4,"GBP","4 января — день рождения Джованни Баттиста Перголези","Stabat Mater. На минуту всё стало очень серьёзно.",["F4","G4","Ab4","G4","F4","Eb4","D4","C4","D4","Eb4","F4","G4"],0.31,0.27,"sine",0.052],["lully",["LULLY","ЛЮЛЛИ"],10,28,"JBL","28 ноября — день рождения Жан-Батиста Люлли","Marche pour la cérémonie des Turcs. Палка дирижёра сегодня особенно опасна.",["D4","D4","A4","A4","D5","E5","F#5","E5","D5","C#5","B4","A4"],0.22,0.17,"sawtooth",0.038],["rameau",["RAMEAU","РАМО"],8,25,"JPR","25 сентября — день рождения Жан-Филиппа Рамо","Les Sauvages. Французское барокко проснулось.",["D4","D4","E4","F4","E4","D4","C4","D4","E4","F4","G4","F4","E4","D4"],0.2,0.16,"triangle",0.049],["couperin",["COUPERIN","КУПЕРЕН"],10,10,"FC","10 ноября — день рождения Франсуа Куперена","Les Barricades Mystérieuses. Баррикады есть, разгадки нет.",["C4","E4","G4","B4","A4","G4","F4","E4","D4","F4","A4","G4"],0.24,0.2,"sine",0.05],["buxtehude",["BUXTEHUDE","БУКСТЕХУДЕ"],null,null,"DB","Дитрих Букстехуде — точная дата рождения неизвестна","Passacaglia ре минор. Остинато держится крепче расписания.",["D3","C3","Bb2","A2","G2","A2","Bb2","C3","D3","C3","Bb2","A2"],0.3,0.25,"sine",0.052],["schutz",["SCHUTZ","SCHÜTZ","ШЮТЦ"],9,8,"HS","8 октября — день рождения Генриха Шютца","Schütz. До Баха ещё далеко, а драматургия уже здесь.",["D4","E4","F#4","G4","A4","G4","F#4","E4","D4","A3","D4","E4"],0.27,0.22,"sine",0.05],["cpebach",["CPEBACH","CARLPHILIPPEMANUELBACH","КФЭБАХ","КАРЛФИЛИППЭМАНУЭЛЬБАХ"],2,8,"CPE","8 марта — день рождения Карла Филиппа Эмануэля Баха","Solfeggietto. Бах, но уже нервнее.",["C4","E4","G4","C5","E5","D5","C5","B4","A4","G4","F4","E4","D4","C4"],0.12,0.09,"triangle",0.047],["leopoldmozart",["LEOPOLDMOZART","ЛЕОПОЛЬДМОЦАРТ"],10,14,"LM","14 ноября — день рождения Леопольда Моцарта","Toy Symphony. Игрушки тоже требуют репетиции.",["C5","E5","G5","C6","G5","E5","C5","D5","F5","A5","G5","F5"],0.22,0.17,"square",0.04],["gluck",["GLUCK","ГЛЮК"],6,2,"CWG","2 июля — день рождения Кристофа Виллибальда Глюка","Dance of the Blessed Spirits. Флейта просит тишины.",["G4","E4","F4","G4","C5","C5","B4","A4","G4","A4","B4","C5"],0.31,0.27,"sine",0.052],["cherubini",["CHERUBINI","КЕРУБИНИ"],8,14,"LC","14 сентября — день рождения Луиджи Керубини","Requiem до минор. Даже Бетховен бы одобрил.",["C4","Eb4","G4","F4","Eb4","D4","C4","G3","C4","D4","Eb4","F4"],0.29,0.24,"sine",0.052],["weber",["WEBER","ВЕБЕР"],10,18,"CMW","18 ноября — день рождения Карла Марии фон Вебера","Der Freischütz. Валторны вышли из леса.",["G4","E4","C4","E4","D4","E4","D4","E4","C4","E4","G4","G4","F4","D4"],0.24,0.19,"sawtooth",0.038],["bellini",["BELLINI","БЕЛЛИНИ"],10,3,"VB","3 ноября — день рождения Винченцо Беллини","Casta Diva. Белканто в календаре.",["B4","B4","C5","B4","A4","B4","D5","C5","B4","A4","A4","G4","B4","A4","G4"],0.3,0.26,"sine",0.052],["donizetti",["DONIZETTI","ДОНИЦЕТТИ"],10,29,"GD","29 ноября — день рождения Гаэтано Доницетти","Una furtiva lagrima. Одна тайная слеза засчитана.",["D4","G4","G4","G4","G4","G4","F#4","A4","Eb4","A4","A4","C5","Bb4"],0.28,0.23,"sine",0.052],["meyerbeer",["MEYERBEER","МЕЙЕРБЕР"],8,5,"GM","5 сентября — день рождения Джакомо Мейербера","Coronation March. Коронация календаря началась.",["C4","B3","C4","D4","E4","C4","F4","E4","D4","E4","G4","C5"],0.23,0.18,"sawtooth",0.038],["berlioz",["BERLIOZ","БЕРЛИОЗ"],11,11,"HB","11 декабря — день рождения Гектора Берлиоза","Symphonie fantastique: idée fixe. Навязчивая тема найдена.",["G4","G4","C5","G4","E4","E4","F4","E4","E4","D4","C4","B3"],0.23,0.18,"triangle",0.049],["gounod",["GOUNOD","ГУНО"],5,17,"CG","17 июня — день рождения Шарля Гуно","Faust. Вальс уже закружил репетицию.",["G4","E4","A4","F#4","G4","E4","A4","F#4","G4","E4","D4","C4"],0.24,0.19,"triangle",0.049],["massenet",["MASSENET","МАССНЕ"],4,12,"JM","12 мая — день рождения Жюля Массне","Méditation из Thaïs. Скрипачи, это вам.",["E5","C5","G5","C6","E6","A5","B5","C6","C6","D6","E6","D6"],0.3,0.25,"sine",0.052],["lalo",["LALO","ЛАЛО"],0,27,"EL","27 января — день рождения Эдуара Лало","Symphonie espagnole. Французская музыка решила стать испанской.",["D5","F#5","A5","D6","C#6","B5","A5","G5","F#5","E5","D5","A4"],0.22,0.17,"triangle",0.049],["franck",["FRANCK","ФРАНК"],11,10,"CF","10 декабря — день рождения Сезара Франка","Соната для скрипки и фортепиано. Циклическая форма замкнулась.",["F#4","A4","C#5","B4","A4","G#4","F#4","E4","F#4","A4","C#5","E5"],0.29,0.24,"sine",0.052],["chausson",["CHAUSSON","ШОССОН"],0,20,"EC","20 января — день рождения Эрнеста Шоссона","Poème. Название короткое, фраза длинная.",["G4","B4","D5","C#5","B4","A4","G4","F#4","E4","F#4","G4","A4"],0.3,0.25,"sine",0.052],["lekeu",["LEKEU","ЛЕКЁ","ЛЕКЕ"],0,20,"GL","20 января — день рождения Гийома Лекё","Соната для скрипки. Романтизм без тормозов.",["G3","B3","D4","G4","F#4","E4","D4","C4","B3","A3","G3","D4"],0.29,0.24,"sine",0.052],["vieuxtemps",["VIEUXTEMPS","ВЬЁТАН"],1,17,"HV","17 февраля — день рождения Анри Вьётана","Скрипичный концерт №5. Ещё одна причина не бросать гаммы.",["A4","E5","C#5","A4","B4","C#5","D5","E5","F#5","E5","D5","C#5"],0.2,0.15,"triangle",0.05],["wieniawski",["WIENIAWSKI","ВЕНЯВСКИЙ"],6,10,"HW","10 июля — день рождения Генрика Венявского","Скрипичный концерт №2. Теперь точно начинается скрипичный заговор.",["D5","F5","A5","G5","F5","E5","D5","C#5","D5","A4","D5","F5"],0.24,0.19,"triangle",0.05],["ysaye",["YSAYE","YSAŸE","ИЗАИ"],6,16,"EY","16 июля — день рождения Эжена Изаи","Соната №3 «Баллада». Одна скрипка, проблем как у оркестра.",["G3","D4","Bb4","A4","G4","F#4","G4","D5","C5","Bb4","A4","G4"],0.18,0.14,"triangle",0.05],["kreisler",["KREISLER","КРЕЙСЛЕР"],1,2,"FK","2 февраля — день рождения Фрица Крейслера","Liebesleid. Любовные страдания в тональности календаря.",["E4","A4","E4","E4","E4","E4","D4","E4","F4","G4","D4","E4"],0.26,0.21,"sine",0.052],["rode",["RODE","РОДЕ"],1,16,"PR","16 февраля — день рождения Пьера Роде","Каприс №24. Этюды тоже умеют прятаться.",["D5","E5","F#5","G5","A5","B5","C#6","D6","C#6","B5","A5","G5"],0.15,0.11,"triangle",0.049],["spohr",["SPOHR","ШПОР"],3,5,"LS","5 апреля — день рождения Луи Шпора","Скрипичный концерт №8. Оперная сцена без певца.",["G4","B4","D5","C5","B4","A4","G4","D4","G4","A4","B4","C5"],0.27,0.22,"sine",0.052],["fibich",["FIBICH","ФИБИХ"],11,21,"ZF","21 декабря — день рождения Зденека Фибиха","Poème. Да, ещё один Poème — романтики любили краткость.",["C5","B4","E5","G5","A5","Bb5","Bb5","A5","G5","F5","E5","D5"],0.29,0.24,"sine",0.052],["svendsen",["SVENDSEN","СВЕНДСЕН"],8,30,"JS","30 сентября — день рождения Юхана Свенсена","Romance. Скрипка получила ещё одну красивую страницу.",["G4","B4","D5","C5","B4","A4","G4","F#4","E4","D4","G4","A4"],0.29,0.24,"sine",0.052],["nielsen",["NIELSEN","НИЛЬСЕН"],5,9,"CN","9 июня — день рождения Карла Нильсена","Скрипичный концерт. Северная ясность и совсем не северная простота.",["A4","C5","E5","D5","C5","B4","A4","G#4","A4","C5","B4","A4"],0.25,0.2,"triangle",0.049],["bruckner",["BRUCKNER","БРУКНЕР"],8,4,"AB","4 сентября — день рождения Антона Брукнера","Симфония №4 «Романтическая». Валторна уже на башне.",["G3","C4","C4","G4","Ab4","C5","C5","G4","G4","C5","D5","C5"],0.27,0.22,"sawtooth",0.038],["mascagni",["MASCAGNI","МАСКАНЬИ"],11,7,"PM","7 декабря — день рождения Пьетро Масканьи","Cavalleria rusticana: Intermezzo. Сцена замерла.",["E4","G4","C5","E5","A5","A5","G5","F5","C5","E5","D5","C5"],0.31,0.27,"sine",0.052],["leoncavallo",["LEONCAVALLO","ЛЕОНКАВАЛЛО"],3,23,"RL","23 апреля — день рождения Руджеро Леонкавалло","Vesti la giubba. Улыбаемся, даже если партия не выучена.",["E4","E4","F4","G4","A4","G4","F4","E4","D4","C4","D4","E4"],0.29,0.24,"sine",0.052],["cilea",["CILEA","ЧИЛЕА"],6,23,"FC","23 июля — день рождения Франческо Чилеа","È la solita storia del pastore. И снова история про тенора.",["G4","A4","Bb4","C5","D5","C5","Bb4","A4","G4","F4","G4","A4"],0.3,0.25,"sine",0.052],["delibes",["DELIBES","ДЕЛИБ"],1,21,"LD","21 февраля — день рождения Лео Делиба","Flower Duet. Две линии лучше одной.",["E5","D5","E5","F5","E5","D5","E5","F5","E5","F5","G5","A5"],0.27,0.22,"sine",0.052],["balakirev",["BALAKIREV","БАЛАКИРЕВ"],0,2,"MB","2 января — день рождения Милия Балакирева","Islamey. Пианисты сейчас тихо вышли из чата.",["A4","A4","A4","A4","Ab4","A4","C5","C5","Ab4","A4","B4","C5"],0.13,0.1,"triangle",0.048],["lyadov",["LYADOV","LIADOV","ЛЯДОВ"],4,12,"AL","12 мая — день рождения Анатолия Лядова","«Волшебное озеро». Оно наконец-то не требует аудиторию.",["D4","A4","C5","B4","A4","G4","F#4","E4","D4","F#4","A4","C5"],0.33,0.28,"sine",0.052],["cui",["CUI","КЮИ"],0,18,"CC","18 января — день рождения Цезаря Кюи","Кюи. Маленькая пьеса спряталась между большими симфониями.",["E4","G4","B4","A4","G4","F#4","E4","D#4","E4","G4","F#4","E4"],0.27,0.22,"triangle",0.049],["arensky",["ARENSKY","АРЕНСКИЙ"],6,12,"AA","12 июля — день рождения Антона Аренского","Фортепианное трио №1. Камерный состав тоже пришёл.",["D4","F4","A4","G4","F4","E4","D4","C#4","D4","A4","F4","D4"],0.29,0.24,"sine",0.052],["taneyev",["TANEYEV","ТАНЕЕВ"],10,25,"ST","25 ноября — день рождения Сергея Танеева","Фортепианный квинтет. Контрапункт проверяет посещаемость.",["G3","D4","G4","A4","Bb4","A4","G4","F#4","G4","D5","C5","Bb4"],0.26,0.21,"triangle",0.049],["kalinnikov",["KALINNIKOV","КАЛИННИКОВ"],0,13,"VK","13 января — день рождения Василия Калинникова","Симфония №1. Русский симфонизм включён.",["G3","Bb3","D4","G4","F4","Eb4","D4","C4","Bb3","A3","G3","D4"],0.28,0.23,"sine",0.052],["lyapunov",["LYAPUNOV","ЛЯПУНОВ"],10,30,"SL","30 ноября — день рождения Сергея Ляпунова","Трансцендентный этюд. Название предупреждало.",["E4","G4","B4","E5","D#5","C#5","B4","A4","G4","F#4","E4","B4"],0.14,0.11,"triangle",0.048],["gliere",["GLIERE","GLIÈRE","ГЛИЭР"],0,11,"RG","11 января — день рождения Рейнгольда Глиэра","Русский матросский танец. Палуба держится.",["A4","A4","E4","G4","E4","F4","D4","A4","E4","C4","C4","D4","D4"],0.18,0.14,"triangle",0.049],["ippolitov",["IPPOLITOVIVANOV","IPPOLITOV","ИППОЛИТОВИВАНОВ","ИППОЛИТОВ"],10,19,"MI","19 ноября — день рождения Михаила Ипполитова-Иванова","Шествие сардара. Проход по календарю торжественно открыт.",["E4","Ab4","A4","B4","B4","B4","C5","A4","B4","A4","Ab4","A4"],0.22,0.17,"sawtooth",0.038],["scriabin",["SCRIABIN","СКРЯБИН"],0,6,"AS","6 января — день рождения Александра Скрябина","Этюд Op.8 №12. Фортепиано уже горит, но это нормально.",["D#4","A#4","B4","C#5","D#5","F#5","G5","F#5","D#5","C#5","B4","A#4"],0.16,0.12,"triangle",0.049],["myaskovsky",["MYASKOVSKY","MIASKOVSKY","МЯСКОВСКИЙ"],3,20,"NM","20 апреля — день рождения Николая Мясковского","Виолончельный концерт. Самая тихая сила в списке.",["D3","A3","D4","F4","E4","D4","C#4","D4","A3","C4","D4","E4"],0.31,0.27,"sine",0.052]];
-
-
-    EXTRA_COMPOSER_EASTER_EGGS
-        .forEach(
-            item => {
-
-                const [
-                    key,
-                    aliases,
-                    month,
-                    day,
-                    label,
-                    title,
-                    message,
-                    notes,
-                    step,
-                    duration,
-                    waveform,
-                    volume
-                ] =
-                    item;
-
-
-                MUSICAL_EASTER_EGGS[
-                    key
-                ] = {
-
-                    aliases,
-
-                    ...(Number.isInteger(month)
-                        ? { month }
-                        : {}),
-
-                    ...(Number.isInteger(day)
-                        ? { day }
-                        : {}),
-
-                    label,
-
-                    title,
-
-                    className:
-                        (
-                            key.length % 4 === 0
-                                ? 'is-beethoven'
-                                : key.length % 4 === 1
-                                    ? 'is-bach'
-                                    : key.length % 4 === 2
-                                        ? 'is-tchaikovsky'
-                                        : 'is-mission'
-                        ),
-
-                    message,
-
-                    play:
-                        () =>
-                            playSimpleNamedMelody(
-                                notes,
-                                step,
-                                duration,
-                                waveform,
-                                volume
-                            )
-
-                };
-
-            }
-        );
-
-
     const EASTER_PROGRESS_KEY =
         'hse-orchestra-musical-easter-eggs-v1';
 
@@ -2134,47 +2059,14 @@
 
     function showEasterProgress() {
 
-        const composerKeys =
-            Object.keys(
-                MUSICAL_EASTER_EGGS
-            )
-            .filter(
-                key =>
-                    key !== 'mission'
-            );
-
-
-        const composerTotal =
-            composerKeys.length;
-
-
-        const composerFound =
-            composerKeys
-                .filter(
-                    key =>
-                        foundMusicalEggs.has(
-                            key
-                        )
-                )
-                .length;
-
-
-        const composerLeft =
-            Math.max(
-                0,
-                composerTotal -
-                composerFound
-            );
-
-
-        const musicalTotal =
+        const total =
             Object.keys(
                 MUSICAL_EASTER_EGGS
             )
             .length;
 
 
-        const musicalFound =
+        const found =
             [
                 ...foundMusicalEggs
             ]
@@ -2189,34 +2081,33 @@
             .length;
 
 
-        showToast(
-            composerFound ===
-            composerTotal
+        const left =
+            Math.max(
+                0,
+                total - found
+            );
 
-                ? 'Tutti! Композиторы: ' +
-                  composerFound +
+
+        showToast(
+            found === total
+
+                ? 'Tutti! Найдено музыкальных пасхалок: ' +
+                  found +
                   ' / ' +
-                  composerTotal +
-                  '. Музыкальные пасхалки: ' +
-                  musicalFound +
-                  ' / ' +
-                  musicalTotal +
+                  total +
                   '.'
 
-                : 'Композиторы: ' +
-                  composerFound +
+                : 'Найдено музыкальных пасхалок: ' +
+                  found +
                   ' / ' +
-                  composerTotal +
+                  total +
                   '. Осталось: ' +
-                  composerLeft +
-                  '. Музыкальные пасхалки: ' +
-                  musicalFound +
-                  ' / ' +
-                  musicalTotal +
+                  left +
                   '.'
         );
 
     }
+
 
     function triggerMusicalEgg(
         key
@@ -2327,181 +2218,6 @@
         return match
             ? match.key
             : null;
-
-    }
-
-
-    function showSpecialDateEasterEgg(
-        month,
-        day
-    ) {
-
-        if (
-            month === 9
-            &&
-            day === 19
-        ) {
-
-            showToast(
-                'Роняет лес багряный свой убор... А наш оркестр россыпь нот'
-            );
-
-
-            return true;
-
-        }
-
-
-        if (
-            month === 11
-            &&
-            day === 19
-        ) {
-
-            showToast(
-                'С Днём Рождения, Ришат!'
-            );
-
-
-            return true;
-
-        }
-
-
-        return false;
-
-    }
-
-
-    function ensureJeanModal() {
-
-        let modal =
-            $('#orch-jean-modal');
-
-
-        if (
-            modal
-        ) {
-
-            return modal;
-
-        }
-
-
-        modal =
-            document.createElement(
-                'div'
-            );
-
-
-        modal.id =
-            'orch-jean-modal';
-
-
-        modal.className =
-            'orch-jean-modal';
-
-
-        modal.hidden =
-            true;
-
-
-        modal.innerHTML =
-            '<div class="orch-jean-modal__backdrop" data-jean-close></div>' +
-            '<div class="orch-jean-modal__card" role="dialog" aria-modal="true" aria-label="Jean">' +
-                '<button type="button" class="orch-jean-modal__close" data-jean-close aria-label="Закрыть">×</button>' +
-                '<div class="orch-jean-modal__terminal">' +
-                    '<span>jean_valjean@Jean-Valjean-Ubuntu:~$ whoami</span>' +
-                    '<strong>Jean Valjean</strong>' +
-                    '<small>HSE Orchestra · скрипка / код / оркестровый хаос</small>' +
-                '</div>' +
-                '<img class="orch-jean-modal__photo" ' +
-                     'src="' +
-                     CALENDAR_SYNC_BASE +
-                     'assets/jean/jean-conductor.jpg" ' +
-                     'alt="Скрытая фотография из пасхалки Jean">' +
-                '<div class="orch-jean-modal__quote" id="orch-jean-quote"></div>' +
-            '</div>';
-
-
-        modal
-            .querySelectorAll(
-                '[data-jean-close]'
-            )
-            .forEach(
-                node =>
-                    node.addEventListener(
-                        'click',
-                        () => {
-
-                            modal.hidden =
-                                true;
-
-
-                            document.body.style.overflow =
-                                '';
-
-                        }
-                    )
-            );
-
-
-        document.body
-            .appendChild(
-                modal
-            );
-
-
-        return modal;
-
-    }
-
-
-    function showJeanEasterEgg() {
-
-        const modal =
-            ensureJeanModal();
-
-
-        const quotes = [
-            'Пюпитры сами себя не принесут.',
-            'Создатель календаря обнаружен. Не пугайте его — он опять что-то автоматизирует.',
-            'Jean был здесь. Потом ушёл разбираться, почему не пришли вторые скрипки.',
-            'Сначала скрипка. Потом код. Потом почему-то снова код.',
-            'Если всё работает — это пасхалка. Если нет — это репетиция.',
-            '24601'
-        ];
-
-
-        const quote =
-            quotes[
-                Math.floor(
-                    Math.random() *
-                    quotes.length
-                )
-            ];
-
-
-        const quoteNode =
-            $('#orch-jean-quote', modal);
-
-
-        if (
-            quoteNode
-        ) {
-
-            quoteNode.textContent =
-                quote;
-
-        }
-
-
-        modal.hidden =
-            false;
-
-
-        document.body.style.overflow =
-            'hidden';
 
     }
 
@@ -2660,7 +2376,7 @@
         );
 
 
-        $('[data-orch-action="prev"], [data-orch-action="next"]')
+        $$('[data-orch-action="prev"], [data-orch-action="next"]')
         .forEach(
             button => {
 
@@ -2668,15 +2384,17 @@
                     'click',
                     () => {
 
-                        /*
-                         * «Весна» Вивальди звучит только тогда,
-                         * когда стрелкой действительно пришли в март.
-                         */
+                        monthTravelClicks++;
+
+
                         if (
-                            state.month === 2
+                            monthTravelClicks === 4
                         ) {
 
                             enableVivaldiMode();
+
+
+                            monthTravelClicks = 0;
 
                         }
 
@@ -2762,31 +2480,6 @@
 
                 if (
                     typedSecret.endsWith(
-                        'JEAN'
-                    )
-                    ||
-                    typedSecret.endsWith(
-                        'ЖАН'
-                    )
-                ) {
-
-                    event.stopImmediatePropagation();
-
-
-                    showJeanEasterEgg();
-
-
-                    typedSecret =
-                        '';
-
-
-                    return;
-
-                }
-
-
-                if (
-                    typedSecret.endsWith(
                         'EASTER'
                     )
                     ||
@@ -2842,29 +2535,6 @@
 
             },
             true
-        );
-
-
-        document.addEventListener(
-            'keydown',
-            event => {
-
-                if (
-                    event.key === 'Escape'
-                    &&
-                    !$('#orch-jean-modal')?.hidden
-                ) {
-
-                    $('#orch-jean-modal').hidden =
-                        true;
-
-
-                    document.body.style.overflow =
-                        '';
-
-                }
-
-            }
         );
 
     }
@@ -4836,42 +4506,7 @@
                 '<div class="orch-day__events"></div>';
 
 
-            const dayNumberElement =
-                $(
-                    '.orch-day__num',
-                    cellElement
-                );
-
-
-            if (
-                !outside
-                &&
-                dayNumberElement
-            ) {
-
-                dayNumberElement
-                    .addEventListener(
-                        'click',
-                        event => {
-
-                            if (
-                                showSpecialDateEasterEgg(
-                                    month,
-                                    day
-                                )
-                            ) {
-
-                                event.stopPropagation();
-
-                            }
-
-                        }
-                    );
-
-            }
-
-
-            $(
+            $$(
                 '.orch-day__secret',
                 cellElement
             )
