@@ -2376,7 +2376,7 @@
         );
 
 
-        $$('[data-orch-action="prev"], [data-orch-action="next"]')
+        $('[data-orch-action="prev"], [data-orch-action="next"]')
         .forEach(
             button => {
 
@@ -2384,17 +2384,16 @@
                     'click',
                     () => {
 
-                        monthTravelClicks++;
-
-
+                        /*
+                         * Пасхалка Вивальди — «Весна».
+                         * Срабатывает только после перехода стрелкой
+                         * именно на март, а не после N нажатий подряд.
+                         */
                         if (
-                            monthTravelClicks === 4
+                            state.month === 2
                         ) {
 
                             enableVivaldiMode();
-
-
-                            monthTravelClicks = 0;
 
                         }
 
