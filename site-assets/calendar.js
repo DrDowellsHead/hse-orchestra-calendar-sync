@@ -2376,7 +2376,7 @@
         );
 
 
-        $('[data-orch-action="prev"], [data-orch-action="next"]')
+        $$('[data-orch-action="prev"], [data-orch-action="next"]')
         .forEach(
             button => {
 
