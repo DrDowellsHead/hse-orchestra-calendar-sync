@@ -462,9 +462,16 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
   const meetings = events.filter((event) => eventBucket(event) === 'meetings');
   const other = events.filter((event) => eventBucket(event) === 'other');
 
+  const assetVersion =
+    String(
+      process.env.GITHUB_SHA
+      || now.toISOString().replace(/\D/g, '')
+    ).slice(0, 12);
+
   const meta = {
     feedUid: FEED_UID,
     generatedAt: now.toISOString(),
+    assetVersion,
     counts: {
       records: posts.length,
       all: events.length,
@@ -483,6 +490,7 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
   await Promise.all([
     copyFile('site-assets/calendar.css', path.join(outDir, 'assets', 'calendar.css')),
     copyFile('site-assets/calendar.js', path.join(outDir, 'assets', 'calendar.js')),
+    copyFile('site-assets/calendar.runtime.js', path.join(outDir, 'assets', 'calendar.runtime.js')),
     cp('site-assets/jean', path.join(outDir, 'assets', 'jean'), { recursive: true }),
     writeFile(path.join(outDir, 'all.ics'), calendarToIcs(events, CALENDAR_NAME, now), 'utf8'),
     writeFile(path.join(outDir, 'rehearsals.ics'), calendarToIcs(rehearsals, `${CALENDAR_NAME} — Репетиции`, now), 'utf8'),
@@ -493,6 +501,26 @@ export async function generate({ outDir = 'public', fetchImpl = fetch, now = new
     writeFile(
       path.join(outDir, 'meta.js'),
       `window.HSE_ORCHESTRA_CALENDAR_META = ${JSON.stringify(meta)};\n`,
+      'utf8',
+    ),
+    writeFile(
+      path.join(outDir, 'asset-manifest.json'),
+      JSON.stringify(
+        {
+          version: assetVersion,
+          generatedAt: meta.generatedAt,
+        },
+        null,
+        2,
+      ) + '\n',
+      'utf8',
+    ),
+    writeFile(
+      path.join(outDir, 'asset-manifest.js'),
+      `window.HSE_ORCHESTRA_ASSET_MANIFEST = ${JSON.stringify({
+        version: assetVersion,
+        generatedAt: meta.generatedAt,
+      })};\n`,
       'utf8',
     ),
     writeFile(path.join(outDir, 'index.html'), htmlPage(meta), 'utf8'),

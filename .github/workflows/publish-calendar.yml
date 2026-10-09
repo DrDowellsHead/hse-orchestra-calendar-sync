@@ -38,8 +38,11 @@ jobs:
       - name: Run tests
         run: node --test scripts/generate-calendar.test.mjs
 
-      - name: Check Tilda calendar JavaScript
+      - name: Check calendar bootstrap JavaScript
         run: node --check site-assets/calendar.js
+
+      - name: Check calendar runtime JavaScript
+        run: node --check site-assets/calendar.runtime.js
 
       - name: Generate calendars from Tilda
         run: node scripts/generate-calendar.mjs
