@@ -1604,9 +1604,9 @@
 .orch-jean-modal__photo {
     display: block;
     width: 100%;
-    max-height: 360px;
-    object-fit: cover;
-    object-position: center 42%;
+    max-height: 420px;
+    object-fit: contain;
+    object-position: center;
     background: #0b1118;
 }
 
@@ -1637,7 +1637,7 @@
     }
 
     .orch-jean-modal__photo {
-        max-height: 300px;
+        max-height: 360px;
     }
 
     .orch-jean-modal__quote {

@@ -108,6 +108,8 @@
 
     let keyboardHintShown = false;
 
+    let lastJeanPhotoIndex = -1;
+
 
     function decorateCalendarRecord() {
 
@@ -2299,9 +2301,7 @@
                     '<small>HSE Orchestra · скрипка / код / оркестровый хаос</small>' +
                 '</div>' +
                 '<img class="orch-jean-modal__photo" ' +
-                     'src="' +
-                     CALENDAR_SYNC_BASE +
-                     'assets/jean/jean-conductor.jpg" ' +
+                     'src="" ' +
                      'alt="Jean">' +
                 '<div class="orch-jean-modal__quote" id="orch-jean-quote"></div>' +
             '</div>';
@@ -2381,6 +2381,18 @@
         ];
 
 
+        const photos = [
+            'jean-1.jpg',
+            'jean-2.jpg',
+            'jean-3.jpg',
+            'jean-4.jpg',
+            'jean-5.jpg',
+            'jean-6.jpg',
+            'jean-7.jpg',
+            'jean-8.jpg'
+        ];
+
+
         const quote =
             quotes[
                 Math.floor(
@@ -2388,6 +2400,42 @@
                     quotes.length
                 )
             ];
+
+
+        let photoIndex =
+            Math.floor(
+                Math.random() *
+                photos.length
+            );
+
+
+        if (
+            photos.length > 1
+            &&
+            photoIndex ===
+            lastJeanPhotoIndex
+        ) {
+
+            photoIndex =
+                (
+                    photoIndex +
+                    1 +
+                    Math.floor(
+                        Math.random() *
+                        (
+                            photos.length -
+                            1
+                        )
+                    )
+                )
+                %
+                photos.length;
+
+        }
+
+
+        lastJeanPhotoIndex =
+            photoIndex;
 
 
         const quoteNode =
@@ -2406,6 +2454,26 @@
         }
 
 
+        const photoNode =
+            modal.querySelector(
+                '.orch-jean-modal__photo'
+            );
+
+
+        if (
+            photoNode
+        ) {
+
+            photoNode.src =
+                CALENDAR_SYNC_BASE +
+                'assets/jean/' +
+                photos[
+                    photoIndex
+                ];
+
+        }
+
+
         modal.hidden =
             false;
 
@@ -2414,7 +2482,6 @@
             'hidden';
 
     }
-
 
     function enableBeethovenMode() {
         triggerMusicalEgg('beethoven');
