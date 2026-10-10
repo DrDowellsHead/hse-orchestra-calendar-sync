@@ -28,6 +28,27 @@ test('mobile event cards keep padding inside the available width', async () => {
   );
 });
 
+test('mobile note opens the musical dates panel', async () => {
+  const [css, runtime] = await Promise.all([
+    readFile(
+      new URL('../site-assets/calendar.css', import.meta.url),
+      'utf8',
+    ),
+    readFile(
+      new URL('../site-assets/calendar.runtime.js', import.meta.url),
+      'utf8',
+    ),
+  ]);
+
+  assert.match(css, /\.orch-mobile-music-modal\[hidden\]/);
+  assert.match(runtime, /function openMobileMusicModal\(\)/);
+  assert.match(
+    runtime,
+    /isMobileCalendarViewport\(\)[\s\S]*openMobileMusicModal\(\)/,
+  );
+  assert.match(runtime, /data-orch-music-key/);
+});
+
 test('parseDateText supports Tilda date formats', () => {
   assert.equal(parseDateText('16.10.2026'), '2026-10-16');
   assert.equal(parseDateText('2026-10-16'), '2026-10-16');

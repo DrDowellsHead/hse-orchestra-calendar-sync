@@ -114,6 +114,8 @@
 
     let jeanQuoteBag = [];
 
+    let mobileMusicReturnFocus = null;
+
 
     function decorateCalendarRecord() {
 
@@ -3702,6 +3704,431 @@
     }
 
 
+    function isMobileCalendarViewport() {
+
+        return window
+            .matchMedia(
+                '(max-width: 760px)'
+            )
+            .matches;
+
+    }
+
+
+    function mobileMusicEntries() {
+
+        return Object
+            .entries(
+                MUSICAL_EASTER_EGGS
+            )
+            .filter(
+                ([, egg]) =>
+                    Number.isInteger(
+                        egg.month
+                    )
+                    &&
+                    egg.month === state.month
+                    &&
+                    Number.isInteger(
+                        egg.day
+                    )
+            )
+            .sort(
+                (
+                    [, first],
+                    [, second]
+                ) =>
+                    first.day - second.day
+                    ||
+                    first.title.localeCompare(
+                        second.title,
+                        'ru'
+                    )
+            );
+
+    }
+
+
+    function updateMobileMusicProgress(
+        modal
+    ) {
+
+        const total =
+            Object.keys(
+                MUSICAL_EASTER_EGGS
+            )
+            .length;
+
+
+        const found =
+            [
+                ...foundMusicalEggs
+            ]
+            .filter(
+                key =>
+                    Boolean(
+                        MUSICAL_EASTER_EGGS[
+                            key
+                        ]
+                    )
+            )
+            .length;
+
+
+        const progress =
+            $(
+                '#orch-mobile-music-progress',
+                modal
+            );
+
+
+        if (
+            progress
+        ) {
+
+            progress.textContent =
+                'Найдено: ' +
+                found +
+                ' из ' +
+                total;
+
+        }
+
+
+        $$(
+            '[data-orch-music-key]',
+            modal
+        )
+        .forEach(
+            button => {
+
+                const isFound =
+                    foundMusicalEggs.has(
+                        button.dataset.orchMusicKey
+                    );
+
+
+                button.classList.toggle(
+                    'is-found',
+                    isFound
+                );
+
+
+                button.setAttribute(
+                    'aria-label',
+                    (
+                        isFound
+                            ? 'Уже найдено. '
+                            : ''
+                    )
+                    +
+                    button.dataset.orchMusicTitle
+                );
+
+            }
+        );
+
+    }
+
+
+    function ensureMobileMusicModal() {
+
+        let modal =
+            $('#orch-mobile-music-modal');
+
+
+        if (
+            modal
+        ) {
+
+            return modal;
+
+        }
+
+
+        modal =
+            document.createElement(
+                'div'
+            );
+
+
+        modal.id =
+            'orch-mobile-music-modal';
+
+
+        modal.className =
+            'orch-mobile-music-modal';
+
+
+        modal.hidden =
+            true;
+
+
+        modal.innerHTML =
+            '<div class="orch-mobile-music-modal__backdrop" ' +
+                'data-orch-mobile-music-close></div>' +
+            '<div class="orch-mobile-music-modal__panel" ' +
+                'role="dialog" aria-modal="true" ' +
+                'aria-labelledby="orch-mobile-music-title">' +
+                '<button type="button" ' +
+                    'class="orch-mobile-music-modal__close" ' +
+                    'data-orch-mobile-music-close ' +
+                    'aria-label="Закрыть">×</button>' +
+                '<div class="orch-mobile-music-modal__eyebrow">' +
+                    'МУЗЫКАЛЬНЫЕ ДАТЫ' +
+                '</div>' +
+                '<div class="orch-mobile-music-modal__title" ' +
+                    'id="orch-mobile-music-title"></div>' +
+                '<div class="orch-mobile-music-modal__intro">' +
+                    'Нажмите на буквы — и календарь зазвучит.' +
+                '</div>' +
+                '<div class="orch-mobile-music-modal__progress" ' +
+                    'id="orch-mobile-music-progress"></div>' +
+                '<div class="orch-mobile-music-modal__list" ' +
+                    'id="orch-mobile-music-list"></div>' +
+            '</div>';
+
+
+        document.body.appendChild(
+            modal
+        );
+
+
+        $$(
+            '[data-orch-mobile-music-close]',
+            modal
+        )
+        .forEach(
+            element =>
+                element.addEventListener(
+                    'click',
+                    closeMobileMusicModal
+                )
+        );
+
+
+        $(
+            '#orch-mobile-music-list',
+            modal
+        )
+        ?.addEventListener(
+            'click',
+            event => {
+
+                const button =
+                    event.target.closest(
+                        '[data-orch-music-key]'
+                    );
+
+
+                if (
+                    !button
+                ) {
+
+                    return;
+
+                }
+
+
+                triggerMusicalEgg(
+                    button.dataset.orchMusicKey
+                );
+
+
+                updateMobileMusicProgress(
+                    modal
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            'keydown',
+            event => {
+
+                if (
+                    event.key === 'Escape'
+                    &&
+                    !modal.hidden
+                ) {
+
+                    closeMobileMusicModal();
+
+                }
+
+            }
+        );
+
+
+        return modal;
+
+    }
+
+
+    function renderMobileMusicModal(
+        modal
+    ) {
+
+        const title =
+            $(
+                '#orch-mobile-music-title',
+                modal
+            );
+
+
+        const list =
+            $(
+                '#orch-mobile-music-list',
+                modal
+            );
+
+
+        if (
+            !title
+            ||
+            !list
+        ) {
+
+            return;
+
+        }
+
+
+        title.textContent =
+            formatMonthRu(
+                state.year,
+                state.month
+            );
+
+
+        const entries =
+            mobileMusicEntries();
+
+
+        list.innerHTML =
+            entries.length
+
+                ? entries
+                    .map(
+                        ([key, egg]) =>
+                            '<button type="button" ' +
+                                'class="orch-mobile-music-date" ' +
+                                'data-orch-music-key="' +
+                                escapeHtml(
+                                    key
+                                ) +
+                                '" data-orch-music-title="' +
+                                escapeHtml(
+                                    egg.title
+                                ) +
+                                '">' +
+                                '<span class="orch-mobile-music-date__label">' +
+                                    escapeHtml(
+                                        egg.label
+                                    ) +
+                                '</span>' +
+                                '<span class="orch-mobile-music-date__text">' +
+                                    escapeHtml(
+                                        egg.title
+                                    ) +
+                                '</span>' +
+                                '<span class="orch-mobile-music-date__found" ' +
+                                    'aria-hidden="true">✓</span>' +
+                            '</button>'
+                    )
+                    .join('')
+
+                : '<div class="orch-mobile-music-modal__empty">' +
+                    'В этом месяце музыкальных дат нет.' +
+                  '</div>';
+
+
+        updateMobileMusicProgress(
+            modal
+        );
+
+    }
+
+
+    function openMobileMusicModal() {
+
+        initCalendarState();
+
+
+        const modal =
+            ensureMobileMusicModal();
+
+
+        mobileMusicReturnFocus =
+            document.activeElement;
+
+
+        renderMobileMusicModal(
+            modal
+        );
+
+
+        modal.hidden =
+            false;
+
+
+        document.body.style.overflow =
+            'hidden';
+
+
+        window.requestAnimationFrame(
+            () =>
+                $(
+                    '.orch-mobile-music-modal__close',
+                    modal
+                )
+                ?.focus()
+        );
+
+    }
+
+
+    function closeMobileMusicModal() {
+
+        const modal =
+            $('#orch-mobile-music-modal');
+
+
+        if (
+            !modal
+        ) {
+
+            return;
+
+        }
+
+
+        modal.hidden =
+            true;
+
+
+        document.body.style.overflow =
+            '';
+
+
+        if (
+            mobileMusicReturnFocus
+            &&
+            typeof mobileMusicReturnFocus.focus === 'function'
+        ) {
+
+            mobileMusicReturnFocus.focus();
+
+        }
+
+
+        mobileMusicReturnFocus =
+            null;
+
+    }
+
+
     function triggerMusicalEgg(
         key
     ) {
@@ -4257,6 +4684,16 @@
         ?.addEventListener(
             'click',
             () => {
+
+                if (
+                    isMobileCalendarViewport()
+                ) {
+
+                    openMobileMusicModal();
+
+                    return;
+
+                }
 
                 noteClicks++;
 
