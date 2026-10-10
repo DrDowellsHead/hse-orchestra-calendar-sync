@@ -806,6 +806,18 @@
     }
 
 
+    .orch-mobile-agenda,
+    .orch-mobile-day,
+    .orch-mobile-day__events,
+    .orch-mobile-event {
+
+        min-width: 0;
+        max-width: 100%;
+
+        box-sizing: border-box;
+    }
+
+
     .orch-mobile-day {
 
         padding: 14px;
@@ -842,6 +854,8 @@
 
     .orch-mobile-event {
 
+        display: block;
+
         width: 100%;
 
         padding: 12px;
@@ -865,6 +879,10 @@
     .orch-mobile-event__meta {
 
         display: block;
+
+        max-width: 100%;
+
+        overflow-wrap: anywhere;
     }
 
 

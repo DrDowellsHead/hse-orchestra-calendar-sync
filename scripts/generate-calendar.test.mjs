@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 
 import {
   applyChanges,
@@ -10,6 +11,22 @@ import {
   parseDateText,
   seriesEvents,
 } from './generate-calendar.mjs';
+
+test('mobile event cards keep padding inside the available width', async () => {
+  const css = await readFile(
+    new URL('../site-assets/calendar.css', import.meta.url),
+    'utf8',
+  );
+
+  assert.match(
+    css,
+    /\.orch-mobile-event\s*\{[^}]*box-sizing:\s*border-box;/s,
+  );
+  assert.match(
+    css,
+    /\.orch-mobile-event\s*\{[^}]*display:\s*block;[^}]*width:\s*100%;/s,
+  );
+});
 
 test('parseDateText supports Tilda date formats', () => {
   assert.equal(parseDateText('16.10.2026'), '2026-10-16');
