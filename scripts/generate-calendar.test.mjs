@@ -28,7 +28,7 @@ test('mobile event cards keep padding inside the available width', async () => {
   );
 });
 
-test('mobile note opens the musical dates panel', async () => {
+test('mobile note hides the musical dates panel behind five taps', async () => {
   const [css, runtime] = await Promise.all([
     readFile(
       new URL('../site-assets/calendar.css', import.meta.url),
@@ -44,8 +44,9 @@ test('mobile note opens the musical dates panel', async () => {
   assert.match(runtime, /function openMobileMusicModal\(\)/);
   assert.match(
     runtime,
-    /isMobileCalendarViewport\(\)[\s\S]*openMobileMusicModal\(\)/,
+    /mobileNoteClicks\s*===\s*5[\s\S]{0,300}unlockMobileMusicPanel\(\)[\s\S]{0,300}openMobileMusicModal\(\)/,
   );
+  assert.match(runtime, /hse-orchestra-mobile-music-unlocked-v1/);
   assert.match(runtime, /data-orch-music-key/);
 });
 

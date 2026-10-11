@@ -33,6 +33,9 @@
         other: 'other.ics'
     };
 
+    const MOBILE_MUSIC_UNLOCK_KEY =
+        'hse-orchestra-mobile-music-unlocked-v1';
+
     let selectedCalendarKey =
         'all';
 
@@ -103,6 +106,11 @@
     let todayClicks = 0;
 
     let noteClicks = 0;
+
+    let mobileNoteClicks = 0;
+
+    let mobileMusicUnlocked =
+        loadMobileMusicUnlock();
 
     let monthTravelClicks = 0;
 
@@ -3704,6 +3712,55 @@
     }
 
 
+    function loadMobileMusicUnlock() {
+
+        try {
+
+            return window.localStorage
+                .getItem(
+                    MOBILE_MUSIC_UNLOCK_KEY
+                ) === '1';
+
+        }
+
+        catch (
+            error
+        ) {
+
+            return false;
+
+        }
+
+    }
+
+
+    function unlockMobileMusicPanel() {
+
+        mobileMusicUnlocked =
+            true;
+
+
+        try {
+
+            window.localStorage
+                .setItem(
+                    MOBILE_MUSIC_UNLOCK_KEY,
+                    '1'
+                );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            /* Разблокировка сохранится хотя бы до перезагрузки страницы. */
+
+        }
+
+    }
+
+
     function isMobileCalendarViewport() {
 
         return window
@@ -4689,7 +4746,47 @@
                     isMobileCalendarViewport()
                 ) {
 
-                    openMobileMusicModal();
+                    if (
+                        mobileMusicUnlocked
+                    ) {
+
+                        openMobileMusicModal();
+
+                        return;
+
+                    }
+
+                    mobileNoteClicks++;
+
+
+                    const mobileMessages = [
+                        'Одна нота — ещё не тема.',
+                        'Иногда вступление приходится повторить.',
+                        'Кажется, календарь прислушивается.',
+                        'Ещё немного — и кто-то вступит.'
+                    ];
+
+
+                    if (
+                        mobileNoteClicks === 5
+                    ) {
+
+                        unlockMobileMusicPanel();
+
+
+                        openMobileMusicModal();
+
+                        return;
+
+                    }
+
+
+                    showToast(
+                        mobileMessages[
+                            (mobileNoteClicks - 1) %
+                            mobileMessages.length
+                        ]
+                    );
 
                     return;
 
