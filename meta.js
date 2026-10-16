@@ -1,0 +1,1 @@
+window.HSE_ORCHESTRA_CALENDAR_META = {"feedUid":"464271385811","generatedAt":"2026-10-16T08:09:08.126Z","assetVersion":"eb74743a23ba","counts":{"records":10,"all":91,"rehearsals":88,"concerts":3,"meetings":0,"other":0,"cancelled":4}};
